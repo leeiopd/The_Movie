@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block body %}
-    <h1>회원가입</h1>
+    <h1>프로필 수정</h1>
     <form method="POST">
         {% load crispy_forms_tags %}
         {% csrf_token %}
-        {{ userform |crispy}}
+        {{ userProfileform |crispy}}
         <input type='submit'>
     </form>
 {% endblock %}
