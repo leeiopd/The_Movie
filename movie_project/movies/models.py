@@ -11,12 +11,14 @@ class Genre(models.Model):
     
 class Cast(models.Model):
     name = models.CharField(max_length=50)
+    profile_path = models.TextField()
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_casts', blank=True)
     def __str__(self):
         return f'Cast{self.pk}: {self.name}'
     
 class Director(models.Model):
     name = models.CharField(max_length=50)
+    profile_path = models.TextField()
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_directors', blank=True)
     def __str__(self):
         return f'Director{self.pk}: {self.name}'
@@ -34,9 +36,9 @@ class Movie(models.Model):
     genres = models.ManyToManyField(Genre, related_name='movies')
     casts = models.ManyToManyField(Cast, related_name='movies')
     role_data = models.TextField()
+    poster_path = models.TextField()
     director = models.ForeignKey(Director, on_delete=models.PROTECT)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies', blank=True)
-    
     def __str__(self):
         return f'Movie{self.pk}: {self.title}'
         
@@ -57,6 +59,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_comments', blank=True)
     def __str__(self):
         return f'Comment{self.pk}: {self.content}'

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}The Movie{% endblock %}
+{% block body %}
+<div class="container">
+    <div>
+        <img src="{{ movie.poster_path }}">
+        <p>{{ movie.title }}{% if movie not in user.movie_set.all %}<a href="{% url 'movies:create' movie.pk %}">리뷰 작성</a>{% endif %}</p>
+        <p>{{ movie.score_avg }}</p>
+    </div>
+    <div>
+        {% for review in movie.review_set.all %}
+        <!-- collapse -->
+        <div class="accordion" id="accordion1">
+                <div class="card">
+                    <div class="card-header" id="heading{{ review.pk }}">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ review.pk }}" aria-expanded="false" aria-controls="collapse{{ review.pk }}">
+                                {{ review.score }} {{ review.title }} written by. {{ review.user.username }}
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapse{{ review.pk }}" class="collapse" aria-labelledby="heading{{ review.pk }}" data-parent="#accordion1">
+                        <div class="card-body">
+                            {{ review.content }}
+                            {% if user == review.user or user.is_superuser %}
+                            <div class="d-flex justify-content-end">
+                                <a class='btn btn-outline-dark btn-sm' href="{% url 'movies:update' movie.pk review.pk %}">Edit</a>
+                                <form action="{% url 'movies:delete' movie.pk review.pk %}" method="POST" onsubmit="return confirm('Delete?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class='btn btn-outline-dark btn-sm' role='button'>Delete</button>
+                                </form>
+                            </div>
+                            {% endif %}
+                            <!-- comment list: 추후 접은 형태로 수정 -->
+                            <div id="comment-{{ review.pk }}">
+                                {% for comment in review.comment_set.all %}
+                                <div class="mb-1 d-flex justify-content-between">
+                                    <div><a href="#"><b style="margin-right:8px;">{{ comment.user.username }}</b></a><pre>{{ comment.content }}</pre></div>
+                                    {% if user.is_superuser or user == comment.user %}
+                                    <a class='delete-comment' style="color: lightgrey" data-id="{{ comment.pk }}" href="#">x</a>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- comment form -->
+                            {% load crispy_forms_tags %}
+                            <form method="POST" action="{% url 'movies:create_comment' movie.pk review.pk %}" class="comment_form">
+                                {% csrf_token %}
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        {{ form|crispy }}
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-outline-dark btn-sm mt-1">submit</button>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+const commentForm = document.querySelector('.comment_form')
+commentForm.addEventListener('submit', function(e){
+    e.preventDefault()
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+    axios.defaults.xsrfCookieName = 'csrftoken'
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+    const url = e.target.getAttribute('action')
+    const data = new FormData(e.target)
+    axios.post(url, data)
+        .then(function(response){
+            e.target.reset()
+            const content = `<div class="mb-1 d-flex justify-content-between">
+                                <div><a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><pre>${response.data.content}</pre></div>
+                                <a class='delete-comment' style="color: lightgrey" data-id="${response.data.commentPk}" href="#">x</a>
+                            </div>`
+            const commentDiv = document.querySelector(`#comment-${response.data.reviewPk}`)
+            commentDiv.insertAdjacentHTML('beforeend', content)
+        })    
+})   
+
+</script>
+
+{% endblock %}

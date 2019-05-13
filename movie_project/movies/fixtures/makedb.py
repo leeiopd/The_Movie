@@ -5,9 +5,9 @@ import json, csv
 moviedb_key = "893975ab9d270ba1a8a8c1b31e213386"
 
 # keys
-keys = ['adult', 'original_language', 'original_title', 'overview', 
+keys = ['adult', 'original_language', 'original_title', 'overview',
                 'release_date', 'revenue', 'runtime', 'tagline', 'title', 
-                'genres', 'casts', 'role_data', 'director']
+                'genres', 'casts', 'role_data', 'director', 'poster_path']
 movies = []
 casts = []
 directors = []
@@ -24,12 +24,17 @@ for i in range(1, 6):
         movie_info = requests.get(detail_url).json()
         
         fields = {}
-        for key in keys[:-4]:
+        for key in keys[:-5]:
             fields[key] = movie_info[key]
-        for key in keys[-4: -1]:
+        for key in keys[-5: -2]:
             fields[key] = []
         fields['director'] = "-"
         fields['like_users'] = []
+        if movie_info['poster_path']:
+            poster_path = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + movie_info['poster_path']
+        else:
+            poster_path = ""
+        fields['poster_path'] = poster_path
         
         # genres
         tmp = []
@@ -46,11 +51,19 @@ for i in range(1, 6):
         for crew in crews:
             if crew["job"] == "Director":
                 fields["director"] = crew["id"]
-                directors.append({"model": "movies.director", "pk": crew["id"], "fields": {"name": crew["name"], "like_users": []}})
+                if crew['profile_path']:
+                    profile_path = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + crew['profile_path']
+                else:
+                    profile_path = ""
+                directors.append({"model": "movies.director", "pk": crew["id"], "fields": {"name": crew["name"], "profile_path":profile_path, "like_users": []}})
                 break
         tmp = []
         for cast in casts_p:
-            casts.append({"model": "movies.cast", "pk": cast["id"], "fields":{"name": cast['name'], "like_users": []}})
+            if cast['profile_path']:
+                profile_path = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + cast['profile_path']
+            else:
+                profile_path = ""
+            casts.append({"model": "movies.cast", "pk": cast["id"], "fields":{"name": cast['name'], "profile_path": profile_path, "like_users": []}})
             tmp.append(cast['id'])
         fields['casts'] = tmp
         fields['role_data'] = casts_p
@@ -59,12 +72,12 @@ for i in range(1, 6):
         movies.append(movie)
         
         # 최초 쓰기
-        with open('casts1.json', 'w', encoding='utf-8') as f:
+        with open('casts0.json', 'w', encoding='utf-8') as f:
             json.dump(casts, f, ensure_ascii=False, indent="\t")
-        # with open('directors.json','w', encoding='utf-8') as f:
-        #     json.dump(directors, f, ensure_ascii=False, indent="\t")
-        # with open('movies2.json','w', encoding='utf-8') as f:
-        #     json.dump(movies, f, ensure_ascii=False, indent="\t")
+        with open('directors0.json','w', encoding='utf-8') as f:
+            json.dump(directors, f, ensure_ascii=False, indent="\t")
+        with open('movies0.json','w', encoding='utf-8') as f:
+            json.dump(movies, f, ensure_ascii=False, indent="\t")
                 
         # 추가
         # with open('casts.json', 'a', encoding='utf-8') as f:
@@ -76,22 +89,6 @@ for i in range(1, 6):
         # with open('movies.json','a', encoding='utf-8') as f:
         #     for movie in movies:
         #         json.dump(movie, f, ensure_ascii=False, indent="\t")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
