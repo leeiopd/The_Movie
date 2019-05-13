@@ -23,6 +23,7 @@ class LoginForm(forms.ModelForm):
 #         fields = ['password', 'nickname', 'introduction']
         
 class ProfileForm(forms.ModelForm):
+    
     class Meta:
         model = Profile
         exclude = ('user', 'point',)
