@@ -1,0 +1,802 @@
+[
+	{
+		"model": "movies.director",
+		"pk": 1302082,
+		"fields": {
+			"name": "David F. Sandberg",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 19272,
+		"fields": {
+			"name": "Joe Russo",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 53068,
+		"fields": {
+			"name": "Ryan Fleck",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 65630,
+		"fields": {
+			"name": "Rob Letterman",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1424064,
+		"fields": {
+			"name": "Kyouhei Yamaguchi",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1297518,
+		"fields": {
+			"name": "Kazuaki Imai",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 57581,
+		"fields": {
+			"name": "Neil Marshall",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1495940,
+		"fields": {
+			"name": "Frankie Chen",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 95972,
+		"fields": {
+			"name": "Hans Petter Moland",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 11614,
+		"fields": {
+			"name": "M. Night Shyamalan",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1586194,
+		"fields": {
+			"name": "Jenny Gage",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 19272,
+		"fields": {
+			"name": "Joe Russo",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 84124,
+		"fields": {
+			"name": "Tina Gordon Chism",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 20739,
+		"fields": {
+			"name": "Adam Shankman",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1290272,
+		"fields": {
+			"name": "Dennis Widmyer",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 69797,
+		"fields": {
+			"name": "Dean DeBlois",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1481804,
+		"fields": {
+			"name": "Tomoka Nagaoka",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1056121,
+		"fields": {
+			"name": "Ryan Coogler",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 12891,
+		"fields": {
+			"name": "Joss Whedon",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 7879,
+		"fields": {
+			"name": "John Lasseter",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 39189,
+		"fields": {
+			"name": "Stephen Merchant",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 510,
+		"fields": {
+			"name": "Tim Burton",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 15218,
+		"fields": {
+			"name": "James Gunn",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1607672,
+		"fields": {
+			"name": "Michael Chaves",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 15218,
+		"fields": {
+			"name": "James Gunn",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 936670,
+		"fields": {
+			"name": "Bob Persichetti",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 150630,
+		"fields": {
+			"name": "Nicholas McCarthy",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 55934,
+		"fields": {
+			"name": "Taika Waititi",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1362815,
+		"fields": {
+			"name": "David Yarovesky",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 231084,
+		"fields": {
+			"name": "Chee Keong Cheung",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 69237,
+		"fields": {
+			"name": "Joe Berlinger",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 366,
+		"fields": {
+			"name": "James Mangold",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1306608,
+		"fields": {
+			"name": "Adam Robitel",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 59026,
+		"fields": {
+			"name": "Peyton Reed",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 291263,
+		"fields": {
+			"name": "Jordan Peele",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 54040,
+		"fields": {
+			"name": "John Lee Hancock",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1196401,
+		"fields": {
+			"name": "Tomonori Sudou",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 19850,
+		"fields": {
+			"name": "Catherine Hardwicke",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1100748,
+		"fields": {
+			"name": "Frant Gwo",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 12891,
+		"fields": {
+			"name": "Joss Whedon",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1033661,
+		"fields": {
+			"name": "Travis Knight",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 2127,
+		"fields": {
+			"name": "James Wan",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 66212,
+		"fields": {
+			"name": "Timo Vuorensola",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 2294,
+		"fields": {
+			"name": "Robert Rodriguez",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 74619,
+		"fields": {
+			"name": "Sean Anders",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 40644,
+		"fields": {
+			"name": "Chad Stahelski",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 54248,
+		"fields": {
+			"name": "Christopher Landon",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 88857,
+		"fields": {
+			"name": "Dome Karukoski",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 15277,
+		"fields": {
+			"name": "Jon Favreau",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 11181,
+		"fields": {
+			"name": "Kenneth Branagh",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 40644,
+		"fields": {
+			"name": "Chad Stahelski",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 19271,
+		"fields": {
+			"name": "Anthony Russo",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 80602,
+		"fields": {
+			"name": "Tyler Perry",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 11694,
+		"fields": {
+			"name": "Doug Liman",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1293994,
+		"fields": {
+			"name": "Jon Watts",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 9888,
+		"fields": {
+			"name": "Claire Denis",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 11343,
+		"fields": {
+			"name": "David Yates",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 190,
+		"fields": {
+			"name": "Clint Eastwood",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 165787,
+		"fields": {
+			"name": "Rich Moore",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 64151,
+		"fields": {
+			"name": "Mike Mitchell",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 37932,
+		"fields": {
+			"name": "F. Gary Gray",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 4945,
+		"fields": {
+			"name": "Joe Johnston",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 128276,
+		"fields": {
+			"name": "Otto Bathurst",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 58656,
+		"fields": {
+			"name": "Doug Lefler",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 47005,
+		"fields": {
+			"name": "Alan Taylor",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 18899,
+		"fields": {
+			"name": "Yuen Woo-ping",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 17633,
+		"fields": {
+			"name": "Rob Marshall",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1354171,
+		"fields": {
+			"name": "Henry Hobson",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 9032,
+		"fields": {
+			"name": "Bryan Singer",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 91268,
+		"fields": {
+			"name": "Ruben Fleischer",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 55499,
+		"fields": {
+			"name": "Scott Derrickson",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 17496,
+		"fields": {
+			"name": "Jacques Audiard",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 26714,
+		"fields": {
+			"name": "John R. Leonetti",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 155531,
+		"fields": {
+			"name": "Joe Cornish",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 108,
+		"fields": {
+			"name": "Peter Jackson",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 56322,
+		"fields": {
+			"name": "Amy Poehler",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 36602,
+		"fields": {
+			"name": "Peter Berg",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1709468,
+		"fields": {
+			"name": "Gerard McMurray",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 91493,
+		"fields": {
+			"name": "Chris Addison",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 5281,
+		"fields": {
+			"name": "Spike Lee",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 7396,
+		"fields": {
+			"name": "Peter Farrelly",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 10965,
+		"fields": {
+			"name": "Chris Columbus",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 40684,
+		"fields": {
+			"name": "David Leitch",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1419579,
+		"fields": {
+			"name": "Christian Rivers",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 51329,
+		"fields": {
+			"name": "Bradley Cooper",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 108,
+		"fields": {
+			"name": "Peter Jackson",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 4499,
+		"fields": {
+			"name": "Tom Shadyac",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1293994,
+		"fields": {
+			"name": "Jon Watts",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 47506,
+		"fields": {
+			"name": "Drew Goddard",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 51894,
+		"fields": {
+			"name": "J.A. Bayona",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 67367,
+		"fields": {
+			"name": "Rian Johnson",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1,
+		"fields": {
+			"name": "George Lucas",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 222470,
+		"fields": {
+			"name": "Todd Strauss-Schulson",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 140151,
+		"fields": {
+			"name": "William Bindley",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 6884,
+		"fields": {
+			"name": "Patty Jenkins",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 2034,
+		"fields": {
+			"name": "Danny Boyle",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 1018106,
+		"fields": {
+			"name": "S. Craig Zahler",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 122423,
+		"fields": {
+			"name": "Yorgos Lanthimos",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 78160,
+		"fields": {
+			"name": "Luca Guadagnino",
+			"like_users": []
+		}
+	},
+	{
+		"model": "movies.director",
+		"pk": 15358,
+		"fields": {
+			"name": "Vic Armstrong",
+			"like_users": []
+		}
+	}
+]
