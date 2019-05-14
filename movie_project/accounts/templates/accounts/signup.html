@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
+<div class="container">
     <h1>회원가입</h1>
     <form method="POST">
         {% load crispy_forms_tags %}
@@ -7,4 +8,5 @@
         {{ userform |crispy}}
         <input type='submit'>
     </form>
+</div>
 {% endblock %}

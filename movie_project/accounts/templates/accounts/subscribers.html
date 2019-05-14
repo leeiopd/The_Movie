@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% block body %}
+<div class="container">
 {% for subscriber in subscribers %}
 
     <br>
-    {{ subscriber }}
+    {{ subscriber.username }} / point: {{ subscriber.profile.point }}
     <br>
 
 {% endfor %}
+</div>
 {% endblock %}
