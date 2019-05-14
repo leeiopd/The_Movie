@@ -8,11 +8,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 # Create your views here.
-@login_required
+
 def userInfo(request, user_id):
-    user = get_object_or_404(get_user_model(), pk=user_id)
-    profile = get_object_or_404(Profile, user=user)
-    context = {'user':user, 'profile':profile}
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
+    user = get_object_or_404(get_user_model(), pk=request.user.pk)
+    context = {'user_info':user_info, 'user':user}
     return render(request, 'accounts/info.html', context)
 
 
@@ -79,7 +79,7 @@ def signin(request):
             userLoginform = AuthenticationForm(request, request.POST)
             if userLoginform.is_valid():
                 login(request, userLoginform.get_user())
-                return redirect('accounts:info', request.user.pk)
+                return redirect('movies:main')
         else:
             userLoginform = AuthenticationForm()
         context = {'userLoginform':userLoginform}
@@ -91,19 +91,11 @@ def log_out(request):
     logout(request)
     return redirect('accounts:signin')
 
-
 @login_required
-def profile(request):
-    user = get_object_or_404(get_user_model(), pk=request.user.pk)
-    profile = get_object_or_404(Profile, user=user)
-    context = {'user':user, 'profile': profile}
-    return render(request, 'accounts/myInfo.html', context)
-
-@login_required
-def subscribe(request, user_pk):
+def subscribe(request, user_id):
     if request.is_ajax():
         User = get_user_model()
-        target_user = get_object_or_404(User, pk=user_pk)
+        target_user = get_object_or_404(User, pk=user_id)
         
         if request.user in target_user.subscribers.all():
             target_user.subscribers.remove(request.user)
@@ -111,20 +103,20 @@ def subscribe(request, user_pk):
         else:
             target_user.subscribers.add(request.user)
             is_subscribe = True
-        return JsonResponse({'is_subscribe':is_subscribe, 'subscrib_count':target_user.subscribers.count()})
+        return JsonResponse({'is_subscribe':is_subscribe, 'subscribe_count':target_user.subscribers.count()})
 
 
 @login_required
-def mySubscribes(request):
-    user = get_object_or_404(get_user_model(), pk=request.user.pk)
+def subscribeList(request, user_id):
+    user = get_object_or_404(get_user_model(), pk=user_id)
     subscribes = user.subscribe.all()
-    context = {{'subscribes': subscribes}}
-    return render(reqeust, 'accounts/mySubscribes.html', context)
+    context = {'subscribes': subscribes}
+    return render(request, 'accounts/subscribes.html', context)
 
 
 @login_required
-def mySubscribers(request):
-    user = get_object_or_404(get_user_model(), pk=request.user.pk)
+def subscriberList(request, user_id):
+    user = get_object_or_404(get_user_model(), pk=user_id)
     subscribers = user.subscribers.all()
-    context = {{'subscribers':subscribers}}
-    return render(reqeust, 'accounts/mySubscribers.html', context)
+    context = {'subscribers':subscribers}
+    return render(request, 'accounts/subscribers.html', context)

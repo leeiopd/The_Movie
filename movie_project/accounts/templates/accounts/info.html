@@ -1,21 +1,50 @@
 {% extends 'base.html' %}
 {% block body %}
-    {{ user }}
-    {{ profile.nickname }}
-    {{ profile.introduction }}
-    {{ profile.point }}
+    {{ user_info.username }}
+    <br>
+    {{ user_info.profile.nickname }}
+    <br>
+    {{ user_info.profile.introduction }}
+    <br>
+    {{ user_info.profile.point }}
+    <br>
+    {% for genre in user_info.like_genres.all %}
+    {{ genre.name}}
+    <br>
+    {% endfor %}
+    <br>
+    구독자 : <span id="subscriber-count-{{user_info.pk}}">{{ user_info.subscribers.all.count }}</span>
+    <br>
+    {% if user == user_info %}
+    <a href="{% url 'accounts:subscriberList' user.pk  %}">
+    {% else %}
+    <a href="{% url 'accounts:subscriberList' user_info.pk  %}">
+    {% endif %}
+    구독자 보기</a>
+    <br>
+    구독 : {{ user_info.subscribe.all.count }}
+    <br>
+    {% if user == user_info %}
+    <a href="{% url 'accounts:subscribeList' user.pk %}">
+        {% else %}
+        <a href="{% url 'accounts:subscribeList' user_info.pk %}">
+        {% endif %}
+        구독 목록</a>
+    
+    <br>
 
     {% if user != user_info %}
-
-    <button class="follow-button" data-id="{{user_info.id}}">{% if user in user_info.followers.all %}팔로잉{% else %}팔로우{% endif %}</button>
-
-
+    <button class="subscribe-button" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
     {% endif %}
 
+    {% if user == user_info %}
+    <a href="{% url 'accounts:updateProfile' %}">프로필 수정</a>
+    {% endif %}
 
+    {% if user != user_info %}
     <script>
-        const followButton = document.querySelector('.follow-button')
-        followButton.addEventListener('click', function(e){
+        const subscribeButton = document.querySelector('.subscribe-button')
+        subscribeButton.addEventListener('click', function(e){
             const userId = e.target.dataset.id
             // is_ajax() True 를 위한 것
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
@@ -24,19 +53,20 @@
             axios.defaults.xsrfHeaderName = 'X-CSRFToken'
             // scrftoken을 header에 담을 때 X-CSRFToken으로 보내라고 Django에 설정되어 있음.
             
-            axios.post(`/accounts/${userId}/follow`)
+            axios.post(`/accounts/${userId}/subscribe/`)
             .then(function(response){
-                const followCount = document.querySelector(`#follow-count-${userId}`)
-                followCount.innerText = response.data.follow_count
-                if (response.data.is_follow)
+                const SubscriberCount = document.querySelector(`#subscriber-count-${userId}`)
+                SubscriberCount.innerText = response.data.subscribe_count
+                if (response.data.is_subscribe)
                 {
-                    e.target.innerText = "팔로잉"
+                    e.target.innerText = "구독취소"
                 }
                 else
                 {
-                    e.target.innerText =  "팔로우"
+                    e.target.innerText = "구독"
                 }
             })
         })
+    {% endif %}
     </script>
 {% endblock %}
