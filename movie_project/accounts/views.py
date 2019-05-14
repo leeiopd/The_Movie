@@ -5,12 +5,14 @@ from .forms import CreateForm, LoginForm, ProfileForm
 from django.contrib.auth import get_user_model, login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 # Create your views here.
 @login_required
 def userInfo(request, user_id):
     user = get_object_or_404(get_user_model(), pk=user_id)
-    context = {'user':user}
+    profile = get_object_or_404(Profile, user=user)
+    context = {'user':user, 'profile':profile}
     return render(request, 'accounts/info.html', context)
 
 
@@ -37,24 +39,36 @@ def updateProfile(request):
         userProfileform = ProfileForm(request.POST, instance=request.user.profile)
         if userProfileform.is_valid():
             userProfileform.save()
-            return redirect('accounts:updateGenre')
+            return redirect('accounts:profile')
     else:
-        userProfileform = ProfileForm()
+        userProfileform = ProfileForm(instance=request.user.profile)
     context = {'userProfileform':userProfileform}
-    return render(request, 'accounts/update.html', context)
+    return render(request, 'accounts/profile.html', context)
+
 
 @login_required
 def updateGenre(request):
+    user = get_object_or_404(get_user_model(), pk=request.user.pk)
     if request.method == 'POST':
-        genre_id_list = request.POST.get(genre_id_list)
-        for genre_id in genre_id_list:
-            like_genre = get_object_or_404(Genre, pk=genre_id)
-            if request.user in like_genre.like_users.all():
-                like_genre.like_users.remove(request.user)
-            else:
-                like_genre.like_users.add(request.user)
+        allGenre = Genre.objects.all()
+
+        for genre in allGenre:
+            if user in genre.like_users.all():
+                genre.like_users.remove(user)
+
+        like_genres = request.POST.getlist('genres')
+        for genreId in like_genres:
+            like_genre = get_object_or_404(Genre, pk=genreId)
+            like_genre.like_users.add(user)
+
+        user_genres = user.like_genres.all()
+        print(user_genres)
+        context = {'user_genres': user_genres}
+        return redirect('accounts:profile')
     else:
-        return render(request, 'accounts/updateGenre.html')
+        user_genres = user.like_genres.all()
+        context = {'user_genres': user_genres}
+        return render(request, 'accounts/genre.html', context)
 
 
 def signin(request):
@@ -76,3 +90,41 @@ def signin(request):
 def log_out(request):
     logout(request)
     return redirect('accounts:signin')
+
+
+@login_required
+def profile(request):
+    user = get_object_or_404(get_user_model(), pk=request.user.pk)
+    profile = get_object_or_404(Profile, user=user)
+    context = {'user':user, 'profile': profile}
+    return render(request, 'accounts/myInfo.html', context)
+
+@login_required
+def subscribe(request, user_pk):
+    if request.is_ajax():
+        User = get_user_model()
+        target_user = get_object_or_404(User, pk=user_pk)
+        
+        if request.user in target_user.subscribers.all():
+            target_user.subscribers.remove(request.user)
+            is_subscribe = False
+        else:
+            target_user.subscribers.add(request.user)
+            is_subscribe = True
+        return JsonResponse({'is_subscribe':is_subscribe, 'subscrib_count':target_user.subscribers.count()})
+
+
+@login_required
+def mySubscribes(request):
+    user = get_object_or_404(get_user_model(), pk=request.user.pk)
+    subscribes = user.subscribe.all()
+    context = {{'subscribes': subscribes}}
+    return render(reqeust, 'accounts/mySubscribes.html', context)
+
+
+@login_required
+def mySubscribers(request):
+    user = get_object_or_404(get_user_model(), pk=request.user.pk)
+    subscribers = user.subscribers.all()
+    context = {{'subscribers':subscribers}}
+    return render(reqeust, 'accounts/mySubscribers.html', context)

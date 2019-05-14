@@ -1,4 +1,42 @@
 {% extends 'base.html' %}
 {% block body %}
     {{ user }}
+    {{ profile.nickname }}
+    {{ profile.introduction }}
+    {{ profile.point }}
+
+    {% if user != user_info %}
+
+    <button class="follow-button" data-id="{{user_info.id}}">{% if user in user_info.followers.all %}팔로잉{% else %}팔로우{% endif %}</button>
+
+
+    {% endif %}
+
+
+    <script>
+        const followButton = document.querySelector('.follow-button')
+        followButton.addEventListener('click', function(e){
+            const userId = e.target.dataset.id
+            // is_ajax() True 를 위한 것
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+            // csrf_token을 위한 것
+            axios.defaults.xsrfCookieName = 'csrftoken'
+            axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+            // scrftoken을 header에 담을 때 X-CSRFToken으로 보내라고 Django에 설정되어 있음.
+            
+            axios.post(`/accounts/${userId}/follow`)
+            .then(function(response){
+                const followCount = document.querySelector(`#follow-count-${userId}`)
+                followCount.innerText = response.data.follow_count
+                if (response.data.is_follow)
+                {
+                    e.target.innerText = "팔로잉"
+                }
+                else
+                {
+                    e.target.innerText =  "팔로우"
+                }
+            })
+        })
+    </script>
 {% endblock %}
