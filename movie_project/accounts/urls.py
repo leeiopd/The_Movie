@@ -17,6 +17,7 @@ urlpatterns = [
     path('<int:user_id>/feed/', views.viewfeed, name='feed'),
     path('<int:user_id>/likes/casts/', views.likeCasts, name='likeCasts'),
     path('<int:user_id>/likes/directors/', views.likeDirectors, name='directors'),
+    path('sidebar/', views.sidebar, name='sidebar'),
 
     
 

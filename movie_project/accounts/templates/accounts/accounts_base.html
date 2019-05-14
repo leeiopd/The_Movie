@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block body %}
+    <!-- Sidebar -->
+<div class="d-flex">
+    <div class="p-2 vh-100 bd-highlight" style="width: 20%!important;">
+        <table class="table table-hover">
+            <tbody>
+                <tr>
+                    <td><span class="ml-4"><a href="{% url 'accounts:user_info' request.user.id %}">My page</a></span></td>
+                </tr>
+                <tr>
+                    <td>새 피드 확인</td>
+                </tr>
+                <tr>
+                    <td>구독 목록</td>
+                </tr>
+                <tr>
+                    <td>구독자 리스트</td>
+                </tr>
+                <tr>
+                    <td>내 배우</td>
+                </tr>
+                <tr>
+                    <td>내 감독</td>
+                </tr>
+                <tr>
+                    <td>내 장르</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="p-2 vh-100 w-100 bd-highlight">
+    {% block accounts %}
+    {% endblock %}
+    </div>
+<div>
+{% endblock %}

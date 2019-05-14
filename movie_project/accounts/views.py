@@ -158,3 +158,6 @@ def likeDirectors(request, user_id):
     directors = user.like_directors.all()
     context = {'directors': directors}
     return render(request, 'accounts/directors.html', context)
+
+def sidebar(request):
+    return render(request, 'accounts/accounts_base.html')
