@@ -39,12 +39,15 @@
                             <!-- comment list: 추후 접은 형태로 수정 -->
                             <div id="comment-{{ review.pk }}">
                                 {% for comment in review.comment_set.all %}
-                                <div class="mb-1 d-flex justify-content-between">
-                                    <div><a href="#"><b style="margin-right:8px;">{{ comment.user.username }}</b></a><pre>{{ comment.content }}</pre></div>
+                                <div class="mb-1 d-flex justify-content-between" id="{{ comment.pk }}">
+                                    <div>
+                                        <a href="#"><b style="margin-right:8px;">{{ comment.user.username }}</b></a>
+                                        <pre>{{ comment.content }}</pre>
+                                    </div>
                                     {% if user.is_superuser or user == comment.user %}
                                     <div class="d-flex justify-content-end">    
-                                        <a class='update-comment mr-3' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:update_comment' movie.pk review.pk comment.pk %}">o</a>
-                                        <a class='delete-comment' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:delete_comment' movie.pk review.pk comment.pk %}">x</a>
+                                        <a class='update-comment mr-3' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:update_comment' comment.pk %}">o</a>
+                                        <a class='delete-comment' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:delete_comment' comment.pk %}">x</a>
                                     </div>
                                     {% endif %}
                                 </div>
@@ -79,6 +82,60 @@
 {% endblock %}
 {% block script %}
 <script>
+const deleteComment = function(e){
+    e.preventDefault()
+    const url = e.target.getAttribute('href')
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+    axios.defaults.xsrfCookieName = 'csrftoken'
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+    axios.post(url)
+        .then(function(){
+            const id = e.target.dataset.id
+            let a = document.getElementById(id)
+            a.remove()
+        })
+}
+const updateComment = function(e){
+    e.preventDefault()
+    const id = e.target.dataset.id
+    let a = document.getElementById(id)
+    let x = a.firstElementChild.querySelector('pre')
+    let y = `<form class='update-form'><textarea name="content">${x.innerText}</textarea><button type='submit'>submit</button></form>`
+    while (a.hasChildNodes()){
+        a.removeChild(a.firstChild)
+    }
+    a.insertAdjacentHTML('beforeend', y)
+    const updateForm = document.querySelector('.update-form')
+    updateForm.addEventListener('submit', function(e){
+        e.preventDefault()
+        const url = `/movies/${id}/update/`
+        const data = new FormData(e.target)
+        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+        axios.defaults.xsrfCookieName = 'csrftoken'
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+        axios.post(url, data)
+            .then(function(response){
+                 // 지우고 새로 만드는 게 아니라 내용을 바꿔치기 해야 함
+                while (a.hasChildNodes()){
+                    a.removeChild(a.firstChild)
+                }
+                const content = `<div><a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><pre>${response.data.content}</pre></div>
+                                <div class="d-flex justify-content-end">
+                                <a class='update-now mr-3' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/update/">o</a>
+                                <a class='delete-now' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/delete/">x</a>
+                                </div>
+                                `
+                a.insertAdjacentHTML('beforeend', content)
+                const deleteCommentButton = document.querySelector('.delete-now')
+                console.log(deleteCommentButton)
+                deleteCommentButton.addEventListener('click', deleteComment)
+                const updateCommentButton = document.querySelector('.update-now')
+                console.log(updateCommentButton)
+                updateCommentButton.addEventListener('click', updateComment)
+            })
+    })
+    
+}
 const commentForm = document.querySelector('.comment_form')
 commentForm.addEventListener('submit', function(e){
     e.preventDefault()
@@ -87,59 +144,34 @@ commentForm.addEventListener('submit', function(e){
     axios.defaults.xsrfHeaderName = 'X-CSRFToken'
     const url = e.target.getAttribute('action')
     const data = new FormData(e.target)
+    console.log(data)
     axios.post(url, data)
         .then(function(response){
             e.target.reset()
-            const content = `<div class="mb-1 d-flex justify-content-between">
+            const content = `<div class="mb-1 d-flex justify-content-between" id="${response.data.commentPk}">
                                 <div><a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><pre>${response.data.content}</pre></div>
-                                <a class='delete-comment' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.moviePk}/${response.data.reviewPk}/${response.data.commentPk}/delete/">x</a>
+                                <div class="d-flex justify-content-end">
+                                <a class='update-now mr-3' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/update/">o</a>
+                                <a class='delete-now' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/delete/">x</a>
+                                </div>
                             </div>`
             const commentDiv = document.querySelector(`#comment-${response.data.reviewPk}`)
             commentDiv.insertAdjacentHTML('beforeend', content)
-            commentDiv.addEventListener('click', function(e){
-                e.preventDefault()
-                const url = e.target.getAttribute('href')
-                axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-                axios.defaults.xsrfCookieName = 'csrftoken'
-                axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-                axios.post(url)
-                    .then(function(){
-                        e.target.parentElement.remove()
-                    })
-            })
-        })    
-})
+            const deleteCommentButton = document.querySelector('.delete-now')
+            deleteCommentButton.addEventListener('click', deleteComment)
+            const updateCommentButton = document.querySelector('.update-now')
+            updateCommentButton.addEventListener('click', updateComment)
+        })
+})    
 const deleteCommentButtons = document.querySelectorAll('.delete-comment')
 deleteCommentButtons.forEach(function(button){
-    button.addEventListener('click', function(e){
-        e.preventDefault()
-        const url = e.target.getAttribute('href')
-        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-        axios.defaults.xsrfCookieName = 'csrftoken'
-        axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-        axios.post(url)
-            .then(function(){
-                e.target.parentElement.remove()
-            })
-    })
+    button.addEventListener('click', deleteComment) // eventListener가 알아서 넣어주는 것
 }) 
 // update click > eventlistner > pre tag input textarea로 변경, submit 버튼 생성
 // > submit eventlistener > 제출 후 반영된 것처럼 보여주기
 const updateCommentButtons = document.querySelectorAll('.update-comment')
 updateCommentButtons.forEach(function(button){
-    button.addEventListener('click', function(e){
-        e.preventDefault()
-        let x = e.target.parentElement.parentElement.querySelector('pre')
-        x = `<input type='textarea'>${x.innerText}</input><button>submit</button>`
-        // x.addEventListener('click', function(e){
-        //     e.preventDefault()
-            
-        // })
-        
-
-
-
-    })
+    button.addEventListener('click', updateComment)
 })
 
 </script>
