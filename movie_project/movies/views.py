@@ -48,7 +48,7 @@ def create(request, movie_pk):
                 return redirect('movies:detail', movie_pk)
         else:
             form = ReviewForm()
-        context = {'form': form}
+        context = {'form': form, 'movie': movie}
         return render(request, 'movies/form.html', context)
 
 @login_required
@@ -65,6 +65,7 @@ def delete(request, movie_pk, review_pk):
 @login_required
 @require_http_methods(['GET', 'POST'])
 def update(request, movie_pk, review_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
     review = get_object_or_404(Review, pk=review_pk)
     if request.user == review.user or request.user.is_superuser:
         if request.method == "POST":
@@ -74,7 +75,7 @@ def update(request, movie_pk, review_pk):
                 return redirect('movies:detail', movie_pk)
         else:
             form = ReviewForm(instance=review)
-        return render(request, 'movies/form.html', {'form': form})
+        return render(request, 'movies/form.html', {'form': form, 'movie': movie})
     else:
         messages.add_message(request, messages.WARNING, 'You are not a writer.')
         return redirect('movies:detail', movie_pk)
@@ -82,6 +83,7 @@ def update(request, movie_pk, review_pk):
 @require_POST
 @login_required
 def create_comment(request, movie_pk, review_pk):
+    print(request.POST)
     if request.is_ajax():
         review = get_object_or_404(Review, pk=review_pk)
         form = CommentForm(request.POST)
@@ -103,9 +105,10 @@ def create_comment(request, movie_pk, review_pk):
 
 @require_POST
 @login_required
-def delete_comment(request, movie_pk, review_pk, comment_pk):
+def delete_comment(request, comment_pk):
     if request.is_ajax():
         comment = get_object_or_404(Comment, pk=comment_pk)
+        movie_pk = comment.review.movie.pk
         if request.user == comment.user or request.user.is_superuser:
             comment.delete()
             return redirect('movies:detail', movie_pk)
@@ -117,12 +120,14 @@ def delete_comment(request, movie_pk, review_pk, comment_pk):
 
 @login_required
 @require_POST
-def update_comment(request, movie_pk, review_pk, comment_pk):
+def update_comment(request, comment_pk):
     if request.is_ajax():
         comment = get_object_or_404(Comment, pk=comment_pk)
+        movie_pk = comment.review.movie.pk
         if request.user == comment.user or request.user.is_superuser:
             form = CommentForm(request.POST, instance=comment)
             if form.is_valid():
+                print('valid')
                 comment = form.save(commit=False)
                 # comment.user = request.user
                 # review = get_object_or_404(Review, pk=review_pk)
@@ -131,11 +136,13 @@ def update_comment(request, movie_pk, review_pk, comment_pk):
                 data = {'userPk': comment.user.pk,
                         'username': comment.user.username,
                         'content': comment.content,
-                        'moviePk' : movie_pk,
-                        'reviewPk': review_pk,
+                        'moviePk' : comment.review.movie.pk,
+                        'reviewPk': comment.review.pk,
                         'commentPk': comment.pk,
                         }
                 return JsonResponse(data)
+            print('hi')
+            return JsonResponse({'error': str(form)})
         else:
             messages.add_message(request, messages.WARNING, 'You are not a writer.')
             return redirect('movies:detail', movie_pk)
