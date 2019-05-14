@@ -61,10 +61,10 @@
             <ul class="navbar-nav ml-auto">
             <li class="nav-item active"><img style="width:40px;height:40px;border-radius:20px;margin-right:10px" src="#" alt="image"></li>
             <li class="nav-item active">
-                <a class="nav-link" href="#"><b>{{ user.username }}</b></a>
+                <a class="nav-link" href="#"><b>{{ request.user.username }}</b></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="{% url 'accounts:profile' %}">My Page</a>
+                <a class="nav-link" href="{% url 'accounts:user_info' request.user.id %}">My Page</a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'accounts:logout' %}">Logout<span class="sr-only">(current)</span></a>  

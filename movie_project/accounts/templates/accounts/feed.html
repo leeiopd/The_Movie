@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container">
+{% if feeds %}
+{% for feed in feeds %}
+    {{ feed }}
+{% endfor %}
+{% else %}
+<h1>피드가 없습니다</h1>
+{% endif %}
+</div>
+
+
+{% endblock %}

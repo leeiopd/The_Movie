@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
+<div class="container">
 <form method="POST">
     {% csrf_token %}
     좋아하는 장르<br>
@@ -24,4 +25,5 @@
     <input type='checkbox' name='genres' value='37' {% for genre in user_genres %} {% if genre.id == 37 %}checked="checked"{% endif %}{% endfor %}>서부
     <input type="submit">
 </form>
+</div>
 {% endblock %}
