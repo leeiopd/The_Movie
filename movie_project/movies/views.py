@@ -48,7 +48,7 @@ def create(request, movie_pk):
                 return redirect('movies:detail', movie_pk)
         else:
             form = ReviewForm()
-        context = {'form': form}
+        context = {'form': form, 'movie': movie}
         return render(request, 'movies/form.html', context)
 
 @login_required
@@ -65,6 +65,7 @@ def delete(request, movie_pk, review_pk):
 @login_required
 @require_http_methods(['GET', 'POST'])
 def update(request, movie_pk, review_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
     review = get_object_or_404(Review, pk=review_pk)
     if request.user == review.user or request.user.is_superuser:
         if request.method == "POST":
@@ -74,7 +75,7 @@ def update(request, movie_pk, review_pk):
                 return redirect('movies:detail', movie_pk)
         else:
             form = ReviewForm(instance=review)
-        return render(request, 'movies/form.html', {'form': form})
+        return render(request, 'movies/form.html', {'form': form, 'movie': movie})
     else:
         messages.add_message(request, messages.WARNING, 'You are not a writer.')
         return redirect('movies:detail', movie_pk)

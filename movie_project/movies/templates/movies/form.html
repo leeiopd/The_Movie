@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 {% block body %}
-    {% load crispy_forms_tags %}
-    <form method="POST">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit">Submit</button>
-    </form>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <img src="{{ movie.poster_path }}" style="width:90%">
+            </div>
+            <div class="col-6">
+                {% load crispy_forms_tags %}
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

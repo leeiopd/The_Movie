@@ -2,15 +2,49 @@
 {% block title %}The Movie{% endblock %}
 {% block body %}
 <div class="container">
-    <div>
-        <img src="{{ movie.poster_path }}">
-        <p>
-            {{ movie.title }}
-            {% if not reviewed %}
-            <a href="{% url 'movies:create' movie.pk %}">리뷰 작성</a>
-            {% endif %}
-        </p>
-        <p>{{ movie.score_avg }}</p>
+    <div class="row">
+        <div class="col-6">
+            <img src="{{ movie.poster_path }}" style="width:90%">
+        </div>
+        <div class="col-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="row" colspan=2 style="text-align:center">영화 정보</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">title</th>
+                        <td>{{ movie.title }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">original title</th>
+                        <td>{{ movie.original_title }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">gernes</th>
+                        <td>
+                            {% for genre in movie.genres.all %}
+                                {{ genre.name }} 
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">score</th>
+                        <td>{{ movie.score_avg }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row"></th>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"></th>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div>
         {% for review in movie.review_set.all %}
