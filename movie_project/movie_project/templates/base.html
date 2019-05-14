@@ -25,12 +25,50 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="{% static 'images/favicon/ms-icon-144x144.png' %}">
     <meta name="theme-color" content="#ffffff">
+    <!-- fontawsome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <!-- vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
     <!-- navbar -->
-    
+    <nav class="navbar navbar-expand-lg navbar-light bg-white" style="border-bottom:1px solid lightgrey">
+        <a class="navbar-brand" href="{% url 'movies:main' %}"><i class="fab fa-film" style="color:lightcoral"></i> The movie </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">?<span class="sr-only">(current)</span></a>
+            </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+            <li class="nav-item active"><img style="width:40px;height:40px;border-radius:20px;margin-right:10px" src="#" alt="image"></li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#"><b>{{ user.username }}</b></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'accounts:profile' %}">My Page</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'accounts:logout' %}">Logout<span class="sr-only">(current)</span></a>  
+            </li>
+            </ul>
+            {% else %}
+            <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up<span class="sr-only">(current)</span></a>  
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'accounts:signin' %}">Login</a>
+            </li>
+            </ul>
+            {% endif %}
+        </div>
+    </nav>
     <!-- messages -->
     {% if messages %}
         {% for message in messages %}

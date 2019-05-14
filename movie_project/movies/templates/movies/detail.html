@@ -4,7 +4,12 @@
 <div class="container">
     <div>
         <img src="{{ movie.poster_path }}">
-        <p>{{ movie.title }}{% if movie not in user.movie_set.all %}<a href="{% url 'movies:create' movie.pk %}">리뷰 작성</a>{% endif %}</p>
+        <p>
+            {{ movie.title }}
+            {% if not reviewed %}
+            <a href="{% url 'movies:create' movie.pk %}">리뷰 작성</a>
+            {% endif %}
+        </p>
         <p>{{ movie.score_avg }}</p>
     </div>
     <div>
@@ -37,7 +42,10 @@
                                 <div class="mb-1 d-flex justify-content-between">
                                     <div><a href="#"><b style="margin-right:8px;">{{ comment.user.username }}</b></a><pre>{{ comment.content }}</pre></div>
                                     {% if user.is_superuser or user == comment.user %}
-                                    <a class='delete-comment' style="color: lightgrey" data-id="{{ comment.pk }}" href="#">x</a>
+                                    <div class="d-flex justify-content-end">    
+                                        <a class='update-comment mr-3' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:update_comment' movie.pk review.pk comment.pk %}">o</a>
+                                        <a class='delete-comment' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:delete_comment' movie.pk review.pk comment.pk %}">x</a>
+                                    </div>
                                     {% endif %}
                                 </div>
                                 {% endfor %}
@@ -84,12 +92,55 @@ commentForm.addEventListener('submit', function(e){
             e.target.reset()
             const content = `<div class="mb-1 d-flex justify-content-between">
                                 <div><a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><pre>${response.data.content}</pre></div>
-                                <a class='delete-comment' style="color: lightgrey" data-id="${response.data.commentPk}" href="#">x</a>
+                                <a class='delete-comment' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.moviePk}/${response.data.reviewPk}/${response.data.commentPk}/delete/">x</a>
                             </div>`
             const commentDiv = document.querySelector(`#comment-${response.data.reviewPk}`)
             commentDiv.insertAdjacentHTML('beforeend', content)
+            commentDiv.addEventListener('click', function(e){
+                e.preventDefault()
+                const url = e.target.getAttribute('href')
+                axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+                axios.defaults.xsrfCookieName = 'csrftoken'
+                axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+                axios.post(url)
+                    .then(function(){
+                        e.target.parentElement.remove()
+                    })
+            })
         })    
-})   
+})
+const deleteCommentButtons = document.querySelectorAll('.delete-comment')
+deleteCommentButtons.forEach(function(button){
+    button.addEventListener('click', function(e){
+        e.preventDefault()
+        const url = e.target.getAttribute('href')
+        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+        axios.defaults.xsrfCookieName = 'csrftoken'
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+        axios.post(url)
+            .then(function(){
+                e.target.parentElement.remove()
+            })
+    })
+}) 
+// update click > eventlistner > pre tag input textarea로 변경, submit 버튼 생성
+// > submit eventlistener > 제출 후 반영된 것처럼 보여주기
+const updateCommentButtons = document.querySelectorAll('.update-comment')
+updateCommentButtons.forEach(function(button){
+    button.addEventListener('click', function(e){
+        e.preventDefault()
+        let x = e.target.parentElement.parentElement.querySelector('pre')
+        x = `<input type='textarea'>${x.innerText}</input><button>submit</button>`
+        // x.addEventListener('click', function(e){
+        //     e.preventDefault()
+            
+        // })
+        
+
+
+
+    })
+})
 
 </script>
 
