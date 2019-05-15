@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-6">
             <img src="{{ movie.poster_path }}" style="width:90%">
-            <p><i data-id="{{ movie.pk }}" data-object="movie" class="{% if user in movie.like_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg like-button" style="color:crimson"></i><span id="like-count-movie-{{ movie.pk }}">{{ movie.like_users.count }}</span>명의 user가 이 영화를 좋아합니다.</p>
+            <p><i data-id="{{ movie.pk }}" data-object="movie" class="{% if user in movie.like_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg like-button" style="color:crimson"></i><span id="like-count-movie-{{ movie.pk }}"> {{ movie.like_users.count }}</span>명의 user가 이 영화를 좋아합니다.</p>
         </div>
         <div class="col-6">
             <table class="table">
@@ -76,18 +76,17 @@
                     </div>
                     <div id="collapse{{ review.pk }}" class="collapse" aria-labelledby="heading{{ review.pk }}" data-parent="#accordion1">
                         <div class="card-body">
-                            <div class="pb-5 mb-2">
-                                {{ review.content }}
-                                {% if user == review.user or user.is_superuser %}
-                                <div class="d-flex justify-content-end">
-                                    <a class='btn btn-outline-dark btn-sm' href="{% url 'movies:update' movie.pk review.pk %}">Edit</a>
-                                    <form action="{% url 'movies:delete' movie.pk review.pk %}" method="POST" onsubmit="return confirm('Delete?')">
-                                        {% csrf_token %}
-                                        <button type="submit" class='btn btn-outline-dark btn-sm' role='button'>Delete</button>
-                                    </form>
-                                </div>
-                                {% endif %}
+                            <p class="pb-5 mb-2">{{ review.content }}</p>
+                            <p><i data-id="{{ review.pk }}" data-object="review" class="{% if user in review.like_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg like-button" style="color:crimson"></i><span id="like-count-review-{{ review.pk }}"> {{ review.like_users.count }}</span>명의 user가 이 리뷰를 좋아합니다.</p>
+                            {% if user == review.user or user.is_superuser %}
+                            <div class="d-flex justify-content-end">
+                                <a class='btn btn-outline-dark btn-sm' href="{% url 'movies:update' movie.pk review.pk %}">Edit</a>
+                                <form action="{% url 'movies:delete' movie.pk review.pk %}" method="POST" onsubmit="return confirm('Delete?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class='btn btn-outline-dark btn-sm' role='button'>Delete</button>
+                                </form>
                             </div>
+                            {% endif %}
                             <!-- comment list: 접은 형태 -->
                             <p class="d-flex justify-content-end">
                                 <a class="btn btn-sm btn-light" data-toggle="collapse" href="#collapse{{ review.pk }}-comment" role="button" aria-expanded="false" aria-controls="collapse{{ review.pk }}-comment">댓글 보기</a>
@@ -98,10 +97,11 @@
                                     <div class="mb-1 d-flex justify-content-between" id="{{ comment.pk }}">
                                         <div>
                                             <a href="#"><b style="margin-right:8px;">{{ comment.user.username }}</b></a>
-                                            <pre>{{ comment.content }}</pre>
+                                            <p class='comment-content' style="margin-bottom:0px;">{{ comment.content }}</p>
+                                            <p><i data-id="{{ comment.pk }}" data-object="comment" class="{% if user in comment.like_users.all %}fas{% else %}far{% endif %} fa-heart like-button" style="color:crimson"></i><span id="like-count-comment-{{ comment.pk }}" style="color: crimson;"> {{ comment.like_users.count }}</span></p>
                                         </div>
                                         {% if user.is_superuser or user == comment.user %}
-                                        <div class="d-flex justify-content-end">    
+                                        <div class="d-flex justify-content-end">  
                                             <a class='update-comment mr-3' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:update_comment' comment.pk %}">o</a>
                                             <a class='delete-comment' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:delete_comment' comment.pk %}">x</a>
                                         </div>
@@ -136,6 +136,27 @@
 {% endblock %}
 {% block script %}
 <script>
+const like = function(e){
+    const id = e.target.dataset.id
+    const ob = e.target.dataset.object
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+    axios.defaults.xsrfCookieName = 'csrftoken'
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+    axios.post(`/movies/${id}/${ob}_like/`)
+        .then(function(response){
+            if (ob === "movie" || ob === "review" || ob === "comment"){
+                const likeCount = document.querySelector(`#like-count-${ob}-${id}`)
+                likeCount.innerText = ' ' + response.data.count
+            }
+            if (response.data.is_like) {
+                e.target.classList.remove('far')
+                e.target.classList.add('fas')
+            } else {
+                e.target.classList.remove('fas')
+                e.target.classList.add('far')
+            }
+        })
+}
 const deleteComment = function(e){
     e.preventDefault()
     const url = e.target.getAttribute('href')
@@ -153,7 +174,7 @@ const updateComment = function(e){
     e.preventDefault()
     const id = e.target.dataset.id
     let a = document.getElementById(id)
-    let x = a.firstElementChild.querySelector('pre')
+    let x = a.firstElementChild.querySelector('.comment-content')
     let y = `<form class='update-form form-inline'><div class='d-flex justify-content-between'><textarea class='form-control' name="content" rows='3' cols='100'>${x.innerText}</textarea><button type='submit' class="btn btn-sm btn-light">edit</button><div></form>`
     while (a.hasChildNodes()){
         a.removeChild(a.firstChild)
@@ -173,26 +194,26 @@ const updateComment = function(e){
                 while (a.hasChildNodes()){
                     a.removeChild(a.firstChild)
                 }
-                const content = `<div><a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><pre>${response.data.content}</pre></div>
+                const content = `<div><a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><p class='comment-content'>${response.data.content}</p><p><i data-id="${response.data.commentPk}" data-object="comment" class="${response.data.isLike} fa-heart like-now-${response.data.commentPk}" style="color:crimson"></i><span id="like-count-comment-${response.data.commentPk}" style="color: crimson;"> ${response.data.commentLikes}</span></p></div>
                                 <div class="d-flex justify-content-end">
-                                <a class='update-now mr-3' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/update/">o</a>
-                                <a class='delete-now' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/delete/">x</a>
+                                <a class='update-now-${response.data.commentPk} mr-3' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/update/">o</a>
+                                <a class='delete-now-${response.data.commentPk}' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/delete/">x</a>
                                 </div>
                                 `
                 a.insertAdjacentHTML('beforeend', content)
-                const deleteCommentButton = document.querySelector('.delete-now')
-                console.log(deleteCommentButton)
+                const deleteCommentButton = document.querySelector(`.delete-now-${response.data.commentPk}`)
                 deleteCommentButton.addEventListener('click', deleteComment)
-                const updateCommentButton = document.querySelector('.update-now')
-                console.log(updateCommentButton)
+                const updateCommentButton = document.querySelector(`.update-now-${response.data.commentPk}`)
                 updateCommentButton.addEventListener('click', updateComment)
+                const likeButton = document.querySelector(`.like-now-${response.data.commentPk}`)
+                likeButton.addEventListener('click', like)   
             })
     })
     
 }
-const commentForm = document.querySelector('.comment_form')
-if (commentForm){
-    commentForm.addEventListener('submit', function(e){
+const commentForms = document.querySelectorAll('.comment_form')
+commentForms.forEach(function(button){
+    button.addEventListener('submit', function(e){
         e.preventDefault()
         axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
         axios.defaults.xsrfCookieName = 'csrftoken'
@@ -204,21 +225,27 @@ if (commentForm){
             .then(function(response){
                 e.target.reset()
                 const content = `<div class="mb-1 d-flex justify-content-between" id="${response.data.commentPk}">
-                                    <div><a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><pre>${response.data.content}</pre></div>
+                                    <div>
+                                        <a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><p class='comment-content'>${response.data.content}</p>
+                                        <p><i data-id="${response.data.commentPk}" data-object="comment" class="far fa-heart like-now-${response.data.commentPk}" style="color:crimson"></i><span id="like-count-comment-${response.data.commentPk}" style="color: crimson;"> 0</span></p>
+                                    </div>
                                     <div class="d-flex justify-content-end">
-                                    <a class='update-now mr-3' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/update/">o</a>
-                                    <a class='delete-now' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/delete/">x</a>
+                                    <a class='update-now-${response.data.commentPk} mr-3' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/update/">o</a>
+                                    <a class='delete-now-${response.data.commentPk}' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/delete/">x</a>
                                     </div>
                                 </div>`
                 const commentDiv = document.querySelector(`#comment-${response.data.reviewPk}`)
                 commentDiv.insertAdjacentHTML('beforeend', content)
-                const deleteCommentButton = document.querySelector('.delete-now')
+                const deleteCommentButton = document.querySelector(`.delete-now-${response.data.commentPk}`)
                 deleteCommentButton.addEventListener('click', deleteComment)
-                const updateCommentButton = document.querySelector('.update-now')
+                const updateCommentButton = document.querySelector(`.update-now-${response.data.commentPk}`)
                 updateCommentButton.addEventListener('click', updateComment)
+                const likeButton = document.querySelector(`.like-now-${response.data.commentPk}`)
+                likeButton.addEventListener('click', like) 
             })
-    })    
-}
+    })
+})
+
 const deleteCommentButtons = document.querySelectorAll('.delete-comment')
 deleteCommentButtons.forEach(function(button){
     button.addEventListener('click', deleteComment) // eventListener가 알아서 넣어주는 것
@@ -231,27 +258,7 @@ updateCommentButtons.forEach(function(button){
 })
 const likeButtons = document.querySelectorAll('.like-button')
 likeButtons.forEach(function(button){
-    button.addEventListener('click', function(e){
-        const id = e.target.dataset.id
-        const ob = e.target.dataset.object
-        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-        axios.defaults.xsrfCookieName = 'csrftoken'
-        axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-        axios.post(`/movies/${id}/${ob}_like/`)
-            .then(function(response){
-                if (ob === "movie"){
-                    const likeCount = document.querySelector(`#like-count-${ob}-${id}`)
-                    likeCount.innerText = response.data.count
-                }
-                if (response.data.is_like) {
-                    e.target.classList.remove('far')
-                    e.target.classList.add('fas')
-                } else {
-                    e.target.classList.remove('fas')
-                    e.target.classList.add('far')
-                }
-            })
-    })
+    button.addEventListener('click', like)
 })
 
 </script>

@@ -130,17 +130,19 @@ def update_comment(request, comment_pk):
             form = CommentForm(request.POST, instance=comment)
             if form.is_valid():
                 print('valid')
-                comment = form.save(commit=False)
-                # comment.user = request.user
-                # review = get_object_or_404(Review, pk=review_pk)
-                # comment.review = review
-                comment.save()
+                comment = form.save()
+                if comment.like_users.filter(pk=request.user.id).exists():
+                    is_like = "fas"
+                else:
+                    is_like = "far"
                 data = {'userPk': comment.user.pk,
                         'username': comment.user.username,
                         'content': comment.content,
                         'moviePk' : comment.review.movie.pk,
                         'reviewPk': comment.review.pk,
                         'commentPk': comment.pk,
+                        'commentLikes': comment.like_users.count(),
+                        'isLike': is_like,
                         }
                 return JsonResponse(data)
             print('hi')
@@ -196,5 +198,37 @@ def director_like(request, director_pk):
             director.like_users.add(user)
             is_like = True
         return JsonResponse({'is_like': is_like})
+    else:
+        return HttpResponseBadRequest
+
+@login_required
+@require_POST
+def review_like(request, review_pk):
+    if request.is_ajax():
+        review = get_object_or_404(Review, pk=review_pk)
+        user = request.user
+        if review.like_users.filter(pk=user.id).exists():
+            review.like_users.remove(user)
+            is_like = False
+        else:
+            review.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like, 'count': review.like_users.count()})
+    else:
+        return HttpResponseBadRequest
+
+@login_required
+@require_POST
+def comment_like(request, comment_pk):
+    if request.is_ajax():
+        comment = get_object_or_404(Comment, pk=comment_pk)
+        user = request.user
+        if comment.like_users.filter(pk=user.id).exists():
+            comment.like_users.remove(user)
+            is_like = False
+        else:
+            comment.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like, 'count': comment.like_users.count()})
     else:
         return HttpResponseBadRequest

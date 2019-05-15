@@ -14,7 +14,7 @@ directors = []
 
 # 장르는 따로 받아와서 한 번에 생성
 
-for i in range(1, 10):
+for i in range(1, 101):
     url = f"https://api.themoviedb.org/3/movie/popular?api_key={moviedb_key}&language=ko-KR&page={i}"
     response = requests.get(url).json()
     lists = response['results']
@@ -74,11 +74,11 @@ for i in range(1, 10):
         movies.append(movie)
         
         # 최초 쓰기
-        with open('casts9.json', 'w', encoding='utf-8') as f:
+        with open('casts8.json', 'w', encoding='utf-8') as f:
             json.dump(casts, f, ensure_ascii=False, indent="\t")
-        with open('directors9.json','w', encoding='utf-8') as f:
+        with open('directors8.json','w', encoding='utf-8') as f:
             json.dump(directors, f, ensure_ascii=False, indent="\t")
-        with open('movies9.json','w', encoding='utf-8') as f:
+        with open('movies8.json','w', encoding='utf-8') as f:
             json.dump(movies, f, ensure_ascii=False, indent="\t")
                 
         # 추가
