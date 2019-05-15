@@ -2,18 +2,32 @@
 {% block title %}The Movie{% endblock %}
 {% block body %}
 <div class="container">
+    {% if not reviewed %}
+    <div class="d-flex justify-content-end">
+    <a class="btn btn-sm btn-outline-dark my-3" href="{% url 'movies:create' movie.pk %}">리뷰 쓰기</a>
+    </div>
+    {% endif %}
     <div class="row">
         <div class="col-6">
             <img src="{{ movie.poster_path }}" style="width:90%">
         </div>
         <div class="col-6">
             <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="row" colspan=2 style="text-align:center">영화 정보</th>
-                    </tr>
-                </thead>
                 <tbody>
+                    <tr>
+                        <th scope="row">director</th>
+                        <td><img src="{{ movie.director.profile_path }}" style="width:100px;margin-right:30px;">{{ movie.director.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">casts</th>
+                        <td class="row">
+                            {% for cast in movie.casts.all %}
+                            <div class="col-2">
+                                <img src="{{ cast.profile_path }}" style="width:100px;"><p style="font-size:10px;margin-bottom:0px;">{{ cast.name }}</p>
+                            </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
                     <tr>
                         <th scope="row">title</th>
                         <td>{{ movie.title }}</td>
@@ -32,21 +46,21 @@
                     </tr>
                     <tr>
                         <th scope="row">score</th>
-                        <td>{{ movie.score_avg }}</td>
+                        <td>{% if movie.score_avg %}{{ movie.score_avg }}{% else %}movie.vote_average{% endif %}</td>
                     </tr>
                     <tr>
-                        <th scope="row"></th>
-                        <td></td>
+                        <th scope="row">runtime</th>
+                        <td>{{ movie.runtime }} 분</td>
                     </tr>
                     <tr>
-                        <th scope="row"></th>
-                        <td></td>
+                        <th scope="row">overview</th>
+                        <td>{{ movie.overview }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div>
+    <div class="mb-5">
         {% for review in movie.review_set.all %}
         <!-- collapse -->
         <div class="accordion" id="accordion1">
@@ -54,53 +68,61 @@
                     <div class="card-header" id="heading{{ review.pk }}">
                         <h2 class="mb-0">
                             <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ review.pk }}" aria-expanded="false" aria-controls="collapse{{ review.pk }}">
-                                {{ review.score }} {{ review.title }} written by. {{ review.user.username }}
+                                <i class="fas fa-poll-h" style="color:lightblue;margin-right:1rem"></i>{{ review.title }}<span style="font-size:8px; color:grey; margin-left:3rem">written by. {{ review.user.username }}</span>
                             </button>
                         </h2>
                     </div>
                     <div id="collapse{{ review.pk }}" class="collapse" aria-labelledby="heading{{ review.pk }}" data-parent="#accordion1">
                         <div class="card-body">
-                            {{ review.content }}
-                            {% if user == review.user or user.is_superuser %}
-                            <div class="d-flex justify-content-end">
-                                <a class='btn btn-outline-dark btn-sm' href="{% url 'movies:update' movie.pk review.pk %}">Edit</a>
-                                <form action="{% url 'movies:delete' movie.pk review.pk %}" method="POST" onsubmit="return confirm('Delete?')">
+                            <div class="pb-5 mb-2">
+                                {{ review.content }}
+                                {% if user == review.user or user.is_superuser %}
+                                <div class="d-flex justify-content-end">
+                                    <a class='btn btn-outline-dark btn-sm' href="{% url 'movies:update' movie.pk review.pk %}">Edit</a>
+                                    <form action="{% url 'movies:delete' movie.pk review.pk %}" method="POST" onsubmit="return confirm('Delete?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class='btn btn-outline-dark btn-sm' role='button'>Delete</button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <!-- comment list: 접은 형태 -->
+                            <p class="d-flex justify-content-end">
+                                <a class="btn btn-sm btn-light" data-toggle="collapse" href="#collapse{{ review.pk }}-comment" role="button" aria-expanded="false" aria-controls="collapse{{ review.pk }}-comment">댓글 보기</a>
+                            </p>
+                            <div class="collapse" id="collapse{{ review.pk }}-comment">
+                                <div id="comment-{{ review.pk }}">
+                                    {% for comment in review.comment_set.all %}
+                                    <div class="mb-1 d-flex justify-content-between" id="{{ comment.pk }}">
+                                        <div>
+                                            <a href="#"><b style="margin-right:8px;">{{ comment.user.username }}</b></a>
+                                            <pre>{{ comment.content }}</pre>
+                                        </div>
+                                        {% if user.is_superuser or user == comment.user %}
+                                        <div class="d-flex justify-content-end">    
+                                            <a class='update-comment mr-3' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:update_comment' comment.pk %}">o</a>
+                                            <a class='delete-comment' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:delete_comment' comment.pk %}">x</a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <!-- comment form -->
+                                {% load crispy_forms_tags %}
+                                <form method="POST" action="{% url 'movies:create_comment' movie.pk review.pk %}" class="comment_form">
                                     {% csrf_token %}
-                                    <button type="submit" class='btn btn-outline-dark btn-sm' role='button'>Delete</button>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            {{ form|crispy }}
+                                        </div>
+                                        <div>
+                                            <button type="submit" class="btn btn-outline-dark btn-sm mt-1">submit</button>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
-                            {% endif %}
-                            <!-- comment list: 추후 접은 형태로 수정 -->
-                            <div id="comment-{{ review.pk }}">
-                                {% for comment in review.comment_set.all %}
-                                <div class="mb-1 d-flex justify-content-between" id="{{ comment.pk }}">
-                                    <div>
-                                        <a href="#"><b style="margin-right:8px;">{{ comment.user.username }}</b></a>
-                                        <pre>{{ comment.content }}</pre>
-                                    </div>
-                                    {% if user.is_superuser or user == comment.user %}
-                                    <div class="d-flex justify-content-end">    
-                                        <a class='update-comment mr-3' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:update_comment' comment.pk %}">o</a>
-                                        <a class='delete-comment' style="color: lightgrey" data-id="{{ comment.pk }}" href="{% url 'movies:delete_comment' comment.pk %}">x</a>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                                {% endfor %}
-                            </div>
-                            
-                            <!-- comment form -->
-                            {% load crispy_forms_tags %}
-                            <form method="POST" action="{% url 'movies:create_comment' movie.pk review.pk %}" class="comment_form">
-                                {% csrf_token %}
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        {{ form|crispy }}
-                                    </div>
-                                    <div>
-                                        <button type="submit" class="btn btn-outline-dark btn-sm mt-1">submit</button>
-                                    </div>
-                                </div>
-                            </form>
+
+                         
 
 
                         </div>
@@ -134,7 +156,7 @@ const updateComment = function(e){
     const id = e.target.dataset.id
     let a = document.getElementById(id)
     let x = a.firstElementChild.querySelector('pre')
-    let y = `<form class='update-form'><textarea name="content">${x.innerText}</textarea><button type='submit'>submit</button></form>`
+    let y = `<form class='update-form form-inline'><div class='d-flex justify-content-between'><textarea class='form-control' name="content" rows='3' cols='100'>${x.innerText}</textarea><button type='submit' class="btn btn-sm btn-light">edit</button><div></form>`
     while (a.hasChildNodes()){
         a.removeChild(a.firstChild)
     }

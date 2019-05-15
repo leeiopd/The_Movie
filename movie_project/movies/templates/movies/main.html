@@ -2,17 +2,13 @@
 {% block title %}The Movie{% endblock %}
 {% block body %}
 <div class="container">
-    {% for movie in movies %}
-    <div>
-        <img src="{{ movie.poster_path }}" style="width:300px;">
-        <p>
-            <a href="{% url 'movies:detail' movie.pk %}">{{ movie.title }}</a>
-            {% if movie.pk not in user_movies %}
-            <a href="{% url 'movies:create' movie.pk %}">리뷰 작성</a>
-            {% endif %}
-        </p>
+    <div class="row">
+        {% for movie in movies %}
+        <div class="col-6 col-md-4 col-lg-3 mb-2">
+            <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 
 {% endblock %}
