@@ -2,13 +2,57 @@
 {% block accounts %}
 <div class="container">
 {% if subscribes %}
-{% for subscribe in subscribes %}
 
-    <br>
-    {{ subscribe.username }} / point: {{ subscribe.profile.point }}
+<table class="table text-center">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">LEVEL</th>
+            <th scope="col">POINT</th>
+            <th scope="col">REVIEW</th>
+            <th scope="col">COMMENT</th>
+            <th scope="col"></th>
+            </tr>
+    </thead>
+    <tbody>
+        {% for subscribe in subscribes %}
+        <tr>
+            <td>
+                {{ subscribe.username }}
+            </td>
+            <td>
+            <i class="fas fa-lg fa-chess-{% if subscribe.profile.point >= 50000 %}king{% elif subscribe.profile.point >= 10000 %}queen{% elif subscribe.profile.point >= 5000 %}bishop{% elif subscribe.profile.point >= 1000 %}knight{% elif subscribe.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i>
+            </td>
+            <td>
+            {{ subscribe.profile.point }}
+            </td>
+            <td>
+                {{ subscribe.like_reviews.count }}
+            </td>
+            <td>
+                {{ subscribe.like_comments.count }}
+            </td>
+            <td>
+                <a href="{% url 'accounts:user_info' subscribe.pk %}">정보보기</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>    
 
-    <br>
-{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% else %}
 <div class="jumbotron">
         <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 구독한 유저가 없습니다.{% else %}{{ user_info.username }} 님이 구독한 유저가 없습니다. {% endif %}</h1>

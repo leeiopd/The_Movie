@@ -6,7 +6,10 @@
         {% load crispy_forms_tags %}
         {% csrf_token %}
         {{ userProfileform |crispy}}
-        <input type='submit' href="{% url 'accounts:updateUser' %}" role="button" class="btn btn-secondary" value="입력">
+        <div class="d-flex justify-content-end ml-auto mr-3">
+        <input type='submit' role="button" class="btn btn-secondary" value="입력">
+        <a href="{% url 'accounts:user_info' request.user.id %}" role="button" class="btn btn-secondary ml-2">돌아가기</a>
+        </div>
     </form>
 </div>
 {% endblock %}

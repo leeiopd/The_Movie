@@ -2,10 +2,41 @@
 {% block accounts %}
 <div class="container">
 {% if casts %}
-{% for cast in casts %}
-
-
-
+{% for cast_movies in cast_movie_lists %}
+<table class="table">
+    <tbody>
+        <tr>
+        {% for casts in cast_movies %}
+            {% if forloop.first %}
+            <th scope="row" class="text-center">{{ casts.name }}</th>
+            {% endif %}
+        {% endfor %}
+        </tr>
+        <tr>
+            <td>
+                <div class="container row m-0">
+                <div class="col d-flex flex-row justify-content-center">
+                    
+                        {% for movies in cast_movies %}
+                            {% if forloop.first %}
+                            {% else %}
+                            {% for movie in movies %}
+                                
+                                
+                                <div class="col-3 text-center">
+                                <a href="{% url 'movies:detail' movie.id %}" class="w-10rem"><img src="{{ movie.poster_path }}" alt="Image" class="w-75"/></a>
+                                </div>
+                            {% endfor %}
+                            {% endif %}
+                            
+                        {% endfor %}  
+               
+                </div>   
+                </div>   
+            </td>
+        </tr>
+    </tbody>
+</table>    
 {% endfor %}
 {% else %}
 <div class="jumbotron">
