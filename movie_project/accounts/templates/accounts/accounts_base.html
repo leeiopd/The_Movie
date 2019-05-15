@@ -9,7 +9,7 @@
         <table class="table table-hover">
             <tbody>
                 <tr>
-                    <td><span class="ml-4"><a href="{% url 'accounts:user_info' user_info.id %}">My page</a></span></td>
+                    <td class="d-flex justify-content-between"><span class="ml-4"><a href="{% url 'accounts:user_info' user_info.id %}">My page</a></span>{% if request.user %}<span class="mr-5"><a href="{% url 'accounts:updateUser' %}"><i class="fas fa-cog"></i></a></span>{% endif %}</td>
                 </tr>
                 <tr>
                     <td><span class="ml-4"><a href="{% url 'accounts:feed' user_info.id %}">새 피드 확인</a></span></td>
@@ -21,16 +21,16 @@
                     <td><span class="ml-4"><a href="{% url 'accounts:subscriberList' user_info.id %}">구독자 리스트</a></span></td>
                 </tr>
                 <tr>
-                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesMovies' user_info.id %}">내 영화</a></span></td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesMovies' user_info.id %}">나의 추천 영화</a></span></td>
                 </tr>
                 <tr>
-                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesGenres' user_info.id %}">내 장르</a></span></td>
+                    <td class="d-flex justify-content-between"><span class="ml-4"><a href="{% url 'accounts:favoritesGenres' user_info.id %}">나의 장르 추천영화</a></span> {% if request.user %}<span class="mr-5"><a href="{% url 'accounts:updateGenre' %}"><i class="fas fa-cog"></i></a></span>{% endif %}</td>
                 </tr>
                 <tr>
-                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesCasts' user_info.id %}">내 배우</a></span></td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesCasts' user_info.id %}">나의 배우 추천영화</a></span></td>
                 </tr>
                 <tr>
-                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesDirectors' user_info.id %}">내 감독</a></span></td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesDirectors' user_info.id %}">나의 감독 추천영화</a></span></td>
                 </tr>
             </tbody>
         </table>
@@ -47,16 +47,16 @@
                         <td><span class="ml-4"><a href="{% url 'accounts:subscriberList' user_info.id %}">구독자 리스트</a></span></td>
                     </tr>
                     <tr>
-                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesMovies' user_info.id %}">내 영화</a></span></td>
+                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesMovies' user_info.id %}">유저 추천영화</a></span></td>
                     </tr>
                     <tr>
-                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesGenres' user_info.id %}">내 장르</a></span></td>
+                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesGenres' user_info.id %}">유저 장르 추천영화</a></span></td>
                     </tr>
                     <tr>
-                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesCasts' user_info.id %}">내 배우</a></span></td>
+                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesCasts' user_info.id %}">유저 배우 추천영화</a></span></td>
                     </tr>
                     <tr>
-                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesDirectors' user_info.id %}">내 감독</a></span></td>
+                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesDirectors' user_info.id %}">유저 감독 추천영화</a></span></td>
                     </tr>
                 </tbody>
             </table>

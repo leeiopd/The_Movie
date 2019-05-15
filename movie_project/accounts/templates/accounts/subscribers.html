@@ -3,13 +3,42 @@
 <div class="container">
 
 {% if subscribers %}
-{% for subscriber in subscribers %}
-
-    <br>
-    {{ subscriber.username }} / point: {{ subscriber.profile.point }}
-    <br>
-
-{% endfor %}
+<table class="table text-center">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">LEVEL</th>
+            <th scope="col">POINT</th>
+            <th scope="col">REVIEW</th>
+            <th scope="col">COMMENT</th>
+            <th scope="col"></th>
+            </tr>
+    </thead>
+    <tbody>
+        {% for subscriber in subscribers %}
+        <tr>
+            <td>
+                {{ subscriber.username }}
+            </td>
+            <td>
+            <i class="fas fa-lg fa-chess-{% if subscriber.profile.point >= 50000 %}king{% elif subscribe.profile.point >= 10000 %}queen{% elif subscribe.profile.point >= 5000 %}bishop{% elif subscribe.profile.point >= 1000 %}knight{% elif subscribe.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i>
+            </td>
+            <td>
+            {{ subscriber.profile.point }}
+            </td>
+            <td>
+                {{ subscriber.like_reviews.count }}
+            </td>
+            <td>
+                {{ subscriber.like_comments.count }}
+            </td>
+            <td>
+                <a href="{% url 'accounts:user_info' subscriber.pk %}">정보보기</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>    
 
 {% else %}
 <div class="jumbotron">

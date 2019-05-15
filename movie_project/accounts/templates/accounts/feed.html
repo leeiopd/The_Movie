@@ -2,8 +2,28 @@
 {% block accounts %}
 <div class="container">
 {% if feeds %}
-{% for feed in feeds %}
-    {{ feed }}
+{% for review in feeds %}
+<div class="row">
+        <div class="col-3 text-center">
+            <a href="{% url 'movies:detail' review.movie.id %}"><img src="{{ review.movie.poster_path }}" style="width:60%"></a>
+        </div>
+        <div class="col-6">
+          <table class="table">
+              <tbody>
+                  <tr>
+                      <td><a href="{% url 'accounts:user_info' review.user.id %}"><span>{{ review.user.username }}<i class="fas fa-lg fa-chess-{% if user.profile.point >= 50000 %}king{% elif user.profile.point >= 10000 %}queen{% elif user.profile.point >= 5000 %}bishop{% elif user.profile.point >= 1000 %}knight{% elif user.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i>({{ review.user.profile.point }} point)</span></a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">{{ review.title }} // 평점&nbsp;:&nbsp;&nbsp;{{ review.score }}&nbsp;&nbsp;점</th>
+                  </tr>
+                  <tr>
+                      <td>{{ review.content }}</td>
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+</div>
+<hr class="my-3">
 {% endfor %}
 {% else %}
 <div class="jumbotron">

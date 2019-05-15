@@ -7,31 +7,33 @@
 {% if genres %}
         
 
-{% for genre in genres %}
+{% for genre_movies in genre_movie_lists %}
 <table class="table">
     <tbody>
         <tr>
-            <th scope="row" class="text-center">{{ genre.name }}</th>
+        {% for movies in genre_movies %}
+            {% if forloop.first %}
+            <th scope="row" class="text-center">{{ movies.name }}</th>
+            {% endif %}
+        {% endfor %}
         </tr>
         <tr>
-            <td class="row">
-                <div class="container">
-                <div class="col d-flex flex-row justify-content-around">
-                    {% for genre_movies in genre_movie_lists %}
+            <td>
+                <div class="container row m-0">
+                <div class="col d-flex flex-row justify-content-center">
                         {% for movies in genre_movies %}
+                            {% if forloop.first %}
+                            {% else %}
                             {% for movie in movies %}
-                                {% if not genre in movie.genres.all %}
-                                {% else %}
-                                {% if forloop.counter >= 5 %}
-                                {% else %}
-                                <div class="col-3">
-                                <a href="{% url 'movies:detail' movie.id %}" class="w-10rem"><img src="{{ movie.poster_path }}" alt="Image" class="w-75"/></a>
+                                <div class="col-3 text-center row">
+                                <div>
+                                <a href="{% url 'movies:detail' movie.id %}" class="w-10rem"><div><img src="{{ movie.poster_path }}" alt="Image" class="w-75"/></div></a>
                                 </div>
-                                {% endif %}
-                                {% endif %}
+                                </div>
                             {% endfor %}
-                        {% endfor %}
-                    {% endfor %}    
+                            {% endif %}
+                            
+                        {% endfor %}  
                
                 </div>   
                 </div>   
@@ -43,12 +45,14 @@
 
 {% else %}
 <div class="jumbotron">
-        <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 좋아하는 장르가 비어있네요.{% else %}{{ user_info.username }} 님이 좋아하는 장르가 없어요 ㅜㅜ {% endif %}</h1>
-        <hr class="my-4">
-        <div class="d-flex flex-row-reverse mr-5">
-        <a class="btn btn-primary btn-lg mr-2 " href="{% url 'accounts:user_info' user_info.id %}" role="button">확인</a>
-        {% if user_info == request.user %}<a class="btn btn-primary btn-lg mr-3" href="{% url 'accounts:updateGenre' %}" role="button">등록하기</a>{% endif %}
+    <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 좋아하는 장르가 비어있네요.{% else %}{{ user_info.username }} 님이 좋아하는 장르가 없어요 ㅜㅜ {% endif %}</h1>
+    <hr class="my-4">
+    <div class="d-flex flex-row-reverse mr-5">
+    <a class="btn btn-primary btn-lg mr-2 " href="{% url 'accounts:user_info' user_info.id %}" role="button">확인</a>
+    {% if user_info == request.user %}<a class="btn btn-primary btn-lg mr-3" href="{% url 'accounts:updateGenre' %}" role="button">등록하기</a>{% endif %}
     </div>
 </div>
+
 {% endif %}
+</div>
 {% endblock %}

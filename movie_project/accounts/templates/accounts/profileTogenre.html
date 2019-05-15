@@ -2,13 +2,15 @@
 {% block body %}
 <div class="container">
 <div class="card">
-    <h5 class="card-header">알림</h5>
+    <h5 class="card-header ml-3">알림</h5>
     <div class="card-body">
-      <h5 class="card-title">장르 취향 선택</h5>
-      <p class="card-text">좋아하는 영화 '장르'를 선택 하시겠습니까?</p>
-      <p class="card-text">좋아하는 '장르'를 등록하시면 장르별 추천 영화 정보를 제공해 드립니다.</p>
-      <a href="{% url 'accounts:updateGenre' %}" class="btn btn-primary">Yes</a>
-      <a href="{% url 'accounts:user_info' user.pk %}" class="btn btn-primary">No</a>
+      <h5 class="card-title ml-5">장르 취향 선택</h5>
+      <p class="card-text ml-5">좋아하는 영화 '장르'를 선택 하시겠습니까?</p>
+      <p class="card-text ml-5">좋아하는 '장르'를 등록하시면 장르별 추천 영화 정보를 제공해 드립니다.</p>
+      <div class="d-flex justify-content-end ml-auto mr-5">
+      <a href="{% url 'accounts:updateGenre' %}" class="btn btn-primary mr-3">Yes</a>
+      <a href="{% url 'accounts:user_info' user.pk %}" class="btn btn-secondary mr-5">No</a>
+      </div>
     </div>
   </div>
 </div>
