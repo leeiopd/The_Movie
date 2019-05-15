@@ -10,10 +10,20 @@ from .forms import ReviewForm, CommentForm
 # Create your views here.
 @login_required
 def main(request):
-    movies = Movie.objects.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:20]
-    # 리뷰 작성 여부 확인
-    user_movies = request.user.review_set.values_list('movie__id', flat=True)
-    context = {'movies': movies, 'user_movies': user_movies}
+    # 사용자 평점 기준 movie top10
+    movies_top10 = Movie.objects.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:10]
+    # themoviedb 기준 movie top10
+    movies_dbtop10 = Movie.objects.order_by('-vote_average')[:10]
+    # 내가 좋아하는 장르의 영화
+    movies_gerne = Movie.objects.filter(genres__in=request.user.like_genres.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    # 내가 좋아하는 배우가 출연한 영화
+    movies_cast = Movie.objects.filter(casts__in=request.user.like_casts.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    # 내가 좋아하는 감독이 연출한 영화
+    movies = Movie.objects.filter(director__in=request.user.like_directors.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+
+
+
+    context = {'movies': movies}
     return render(request, 'movies/main.html', context)
 
 @login_required
@@ -46,7 +56,6 @@ def create(request, movie_pk):
                 review.save()
                 request.user.profile.point += 100
                 request.user.profile.save()
-                print(request.user.profile.point)
                 return redirect('movies:detail', movie_pk)
         else:
             form = ReviewForm()
@@ -59,6 +68,8 @@ def delete(request, movie_pk, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     if request.user == review.user or request.user.is_superuser:
         review.delete()
+        request.user.profile.point -= 100
+        request.user.profile.save()
         return redirect('movies:detail', movie_pk)
     else:
         messages.add_message(request, messages.WARNING, 'You are not a writer.')
@@ -94,6 +105,8 @@ def create_comment(request, movie_pk, review_pk):
             comment.user = request.user
             comment.review = review
             comment.save()
+            request.user.profile.point += 10
+            request.user.profile.save()
             data = {'userPk': comment.user.pk,
                     'username': comment.user.username,
                     'content': comment.content,
@@ -115,6 +128,8 @@ def delete_comment(request, comment_pk):
         movie_pk = comment.review.movie.pk
         if request.user == comment.user or request.user.is_superuser:
             comment.delete()
+            request.user.profile.point -= 10
+            request.user.profile.save()
             data = {'count': review.comment_set.count(), 'reviewPk': review.pk}
             return JsonResponse(data)
         else:
