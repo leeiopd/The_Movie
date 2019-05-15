@@ -6,15 +6,15 @@ moviedb_key = "893975ab9d270ba1a8a8c1b31e213386"
 
 # keys
 keys = ['adult', 'original_language', 'original_title', 'overview', 'vote_average',
-                'release_date', 'revenue', 'runtime', 'tagline', 'title', 
-                'genres', 'casts', 'role_data', 'director', 'poster_path']
+                'release_date', 'revenue', 'tagline', 'title', 
+                'genres', 'casts', 'role_data', 'director', 'poster_path','runtime']
 movies = []
 casts = []
 directors = []
 
 # 장르는 따로 받아와서 한 번에 생성
 
-for i in range(1, 100):
+for i in range(1, 10):
     url = f"https://api.themoviedb.org/3/movie/popular?api_key={moviedb_key}&language=ko-KR&page={i}"
     response = requests.get(url).json()
     lists = response['results']
@@ -23,17 +23,20 @@ for i in range(1, 100):
         movie_info = requests.get(detail_url).json()
         
         fields = {}
-        for key in keys[:-5]:
+        for key in keys[:-6]:
             fields[key] = movie_info[key]
-        for key in keys[-5: -2]:
+        for key in keys[-6: -3]:
             fields[key] = []
-        fields['director'] = "-"
         fields['like_users'] = []
         if movie_info['poster_path']:
             poster_path = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + movie_info['poster_path']
         else:
             poster_path = ""
         fields['poster_path'] = poster_path
+        if movie_info['runtime']:
+            fields['runtime'] = movie_info['runtime']
+        else:
+            fields['runtime'] = 0
         
         # genres
         tmp = []
@@ -71,11 +74,11 @@ for i in range(1, 100):
         movies.append(movie)
         
         # 최초 쓰기
-        with open('casts10.json', 'w', encoding='utf-8') as f:
+        with open('casts9.json', 'w', encoding='utf-8') as f:
             json.dump(casts, f, ensure_ascii=False, indent="\t")
-        with open('directors10.json','w', encoding='utf-8') as f:
+        with open('directors9.json','w', encoding='utf-8') as f:
             json.dump(directors, f, ensure_ascii=False, indent="\t")
-        with open('movies10.json','w', encoding='utf-8') as f:
+        with open('movies9.json','w', encoding='utf-8') as f:
             json.dump(movies, f, ensure_ascii=False, indent="\t")
                 
         # 추가

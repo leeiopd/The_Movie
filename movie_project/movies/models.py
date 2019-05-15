@@ -11,14 +11,14 @@ class Genre(models.Model):
     
 class Cast(models.Model):
     name = models.CharField(max_length=50)
-    profile_path = models.TextField()
+    profile_path = models.TextField(blank=True)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_casts', blank=True)
     def __str__(self):
         return f'Cast{self.pk}: {self.name}'
     
 class Director(models.Model):
     name = models.CharField(max_length=50)
-    profile_path = models.TextField()
+    profile_path = models.TextField(blank=True)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_directors', blank=True)
     def __str__(self):
         return f'Director{self.pk}: {self.name}'
@@ -30,14 +30,15 @@ class Movie(models.Model):
     overview = models.TextField(blank=True)
     release_date = models.CharField(max_length=30)
     revenue = models.IntegerField()
-    runtime = models.IntegerField()
+    runtime = models.IntegerField(blank=True)
     tagline = models.TextField(blank=True)
     title = models.TextField()
+    vote_average = models.FloatField()
     genres = models.ManyToManyField(Genre, related_name='movies')
     casts = models.ManyToManyField(Cast, related_name='movies')
     role_data = models.TextField()
     poster_path = models.TextField()
-    director = models.ForeignKey(Director, on_delete=models.PROTECT)
+    director = models.ForeignKey(Director, on_delete=models.PROTECT, blank=True)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies', blank=True)
     def __str__(self):
         return f'Movie{self.pk}: {self.title}'

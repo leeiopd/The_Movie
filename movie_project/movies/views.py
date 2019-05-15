@@ -4,10 +4,11 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
-from .models import Movie, Review, Comment
+from .models import Movie, Review, Comment, Director, Cast
 from .forms import ReviewForm, CommentForm
 
 # Create your views here.
+@login_required
 def main(request):
     movies = Movie.objects.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:20]
     # 리뷰 작성 여부 확인
@@ -15,6 +16,7 @@ def main(request):
     context = {'movies': movies, 'user_movies': user_movies}
     return render(request, 'movies/main.html', context)
 
+@login_required
 def detail(request, movie_pk):
     movie = Movie.objects.annotate(score_avg=Avg('review__score')).get(pk=movie_pk)
     reviewed = False
@@ -149,3 +151,50 @@ def update_comment(request, comment_pk):
     else:
         return HttpResponseBadRequest
 
+@login_required
+@require_POST
+def movie_like(request, movie_pk):
+    if request.is_ajax():
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        user = request.user
+        if movie.like_users.filter(pk=user.id).exists():
+            movie.like_users.remove(user)
+            is_like = False
+        else:
+            movie.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like, 'count': movie.like_users.count()})
+    else:
+        return HttpResponseBadRequest
+
+@login_required
+@require_POST
+def cast_like(request, cast_pk):
+    if request.is_ajax():
+        cast = get_object_or_404(Cast, pk=cast_pk)
+        user = request.user
+        if cast.like_users.filter(pk=user.id).exists():
+            cast.like_users.remove(user)
+            is_like = False
+        else:
+            cast.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like})
+    else:
+        return HttpResponseBadRequest
+
+@login_required
+@require_POST
+def director_like(request, director_pk):
+    if request.is_ajax():
+        director = get_object_or_404(Director, pk=director_pk)
+        user = request.user
+        if director.like_users.filter(pk=user.id).exists():
+            director.like_users.remove(user)
+            is_like = False
+        else:
+            director.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like})
+    else:
+        return HttpResponseBadRequest
