@@ -48,7 +48,7 @@
                     </tr>
                     <tr>
                         <th scope="row">score</th>
-                        <td>{% if movie.score_avg %}{{ movie.score_avg }}{% else %}movie.vote_average{% endif %}</td>
+                        <td>{% if movie.score_avg %}{{ movie.score_avg }}{% else %}{{ movie.vote_average }}{% endif %}</td>
                     </tr>
                     <tr>
                         <th scope="row">runtime</th>
@@ -80,16 +80,16 @@
                             <p><i data-id="{{ review.pk }}" data-object="review" class="{% if user in review.like_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg like-button" style="color:crimson"></i><span id="like-count-review-{{ review.pk }}"> {{ review.like_users.count }}</span>명의 user가 이 리뷰를 좋아합니다.</p>
                             {% if user == review.user or user.is_superuser %}
                             <div class="d-flex justify-content-end">
-                                <a class='btn btn-outline-dark btn-sm' href="{% url 'movies:update' movie.pk review.pk %}">Edit</a>
+                                <a class='btn btn-light btn-sm' href="{% url 'movies:update' movie.pk review.pk %}">Edit Review</a>
                                 <form action="{% url 'movies:delete' movie.pk review.pk %}" method="POST" onsubmit="return confirm('Delete?')">
                                     {% csrf_token %}
-                                    <button type="submit" class='btn btn-outline-dark btn-sm' role='button'>Delete</button>
+                                    <button type="submit" class='btn btn-light btn-sm ml-2' role='button'>Delete Review</button>
                                 </form>
                             </div>
                             {% endif %}
                             <!-- comment list: 접은 형태 -->
-                            <p class="d-flex justify-content-end">
-                                <a class="btn btn-sm btn-light" data-toggle="collapse" href="#collapse{{ review.pk }}-comment" role="button" aria-expanded="false" aria-controls="collapse{{ review.pk }}-comment">댓글 보기</a>
+                            <p>
+                                <a class="btn btn-sm btn-light" data-toggle="collapse" href="#collapse{{ review.pk }}-comment" role="button" aria-expanded="false" aria-controls="collapse{{ review.pk }}-comment">댓글 <b class="comment-count-{{ review.pk }}">{{ review.comment_set.count }}</b>개 보기</a>
                             </p>
                             <div class="collapse" id="collapse{{ review.pk }}-comment">
                                 <div id="comment-{{ review.pk }}">
@@ -164,10 +164,12 @@ const deleteComment = function(e){
     axios.defaults.xsrfCookieName = 'csrftoken'
     axios.defaults.xsrfHeaderName = 'X-CSRFToken'
     axios.post(url)
-        .then(function(){
+        .then(function(response){
             const id = e.target.dataset.id
             let a = document.getElementById(id)
             a.remove()
+            const commentCount = document.querySelector(`.comment-count-${response.data.reviewPk}`)
+            commentCount.innerText = ' ' + response.data.count
         })
 }
 const updateComment = function(e){
@@ -220,7 +222,6 @@ commentForms.forEach(function(button){
         axios.defaults.xsrfHeaderName = 'X-CSRFToken'
         const url = e.target.getAttribute('action')
         const data = new FormData(e.target)
-        console.log(data)
         axios.post(url, data)
             .then(function(response){
                 e.target.reset()
@@ -236,6 +237,8 @@ commentForms.forEach(function(button){
                                 </div>`
                 const commentDiv = document.querySelector(`#comment-${response.data.reviewPk}`)
                 commentDiv.insertAdjacentHTML('beforeend', content)
+                const commentCount = document.querySelector(`.comment-count-${response.data.reviewPk}`)
+                commentCount.innerText = ' ' + response.data.count
                 const deleteCommentButton = document.querySelector(`.delete-now-${response.data.commentPk}`)
                 deleteCommentButton.addEventListener('click', deleteComment)
                 const updateCommentButton = document.querySelector(`.update-now-${response.data.commentPk}`)

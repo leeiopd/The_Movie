@@ -100,6 +100,7 @@ def create_comment(request, movie_pk, review_pk):
                     'moviePk' : movie_pk,
                     'reviewPk': review_pk,
                     'commentPk': comment.pk,
+                    'count': review.comment_set.count()
                     }
             return JsonResponse(data)
     else:
@@ -110,10 +111,12 @@ def create_comment(request, movie_pk, review_pk):
 def delete_comment(request, comment_pk):
     if request.is_ajax():
         comment = get_object_or_404(Comment, pk=comment_pk)
+        review = comment.review
         movie_pk = comment.review.movie.pk
         if request.user == comment.user or request.user.is_superuser:
             comment.delete()
-            return redirect('movies:detail', movie_pk)
+            data = {'count': review.comment_set.count(), 'reviewPk': review.pk}
+            return JsonResponse(data)
         else:
             messages.add_message(request, messages.WARNING, 'You are not a writer.')
             return redirect('movies:detail', movie_pk)
@@ -129,7 +132,6 @@ def update_comment(request, comment_pk):
         if request.user == comment.user or request.user.is_superuser:
             form = CommentForm(request.POST, instance=comment)
             if form.is_valid():
-                print('valid')
                 comment = form.save()
                 if comment.like_users.filter(pk=request.user.id).exists():
                     is_like = "fas"
@@ -145,8 +147,6 @@ def update_comment(request, comment_pk):
                         'isLike': is_like,
                         }
                 return JsonResponse(data)
-            print('hi')
-            return JsonResponse({'error': str(form)})
         else:
             messages.add_message(request, messages.WARNING, 'You are not a writer.')
             return redirect('movies:detail', movie_pk)
