@@ -76,6 +76,7 @@
                     </div>
                     <div id="collapse{{ review.pk }}" class="collapse" aria-labelledby="heading{{ review.pk }}" data-parent="#accordion1">
                         <div class="card-body">
+                            <p class="ml-2" style="color:lightblue"><a href="{% url 'accounts:user_info' review.user.pk %}"><i class="fas fa-lg fa-chess-{% if user.profile.point >= 50000 %}king{% elif user.profile.point >= 10000 %}queen{% elif user.profile.point >= 5000 %}bishop{% elif user.profile.point >= 1000 %}knight{% elif user.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i><b class="ml-2">{{ review.user.username }}</b></a> 님이 작성한 리뷰입니다.</p>
                             <p class="pb-5 mb-2">{{ review.content }}</p>
                             <p><i data-id="{{ review.pk }}" data-object="review" class="{% if user in review.like_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg like-button" style="color:crimson"></i><span id="like-count-review-{{ review.pk }}"> {{ review.like_users.count }}</span>명의 user가 이 리뷰를 좋아합니다.</p>
                             {% if user == review.user or user.is_superuser %}
@@ -96,7 +97,7 @@
                                     {% for comment in review.comment_set.all %}
                                     <div class="mb-1 d-flex justify-content-between" id="{{ comment.pk }}">
                                         <div>
-                                            <a href="#"><b style="margin-right:8px;">{{ comment.user.username }}</b></a>
+                                            <b style="margin-right:8px;">{{ comment.user.username }}</b>
                                             <p class='comment-content' style="margin-bottom:0px;">{{ comment.content }}</p>
                                             <p><i data-id="{{ comment.pk }}" data-object="comment" class="{% if user in comment.like_users.all %}fas{% else %}far{% endif %} fa-heart like-button" style="color:crimson"></i><span id="like-count-comment-{{ comment.pk }}" style="color: crimson;"> {{ comment.like_users.count }}</span></p>
                                         </div>
@@ -196,7 +197,7 @@ const updateComment = function(e){
                 while (a.hasChildNodes()){
                     a.removeChild(a.firstChild)
                 }
-                const content = `<div><a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><p class='comment-content'>${response.data.content}</p><p><i data-id="${response.data.commentPk}" data-object="comment" class="${response.data.isLike} fa-heart like-now-${response.data.commentPk}" style="color:crimson"></i><span id="like-count-comment-${response.data.commentPk}" style="color: crimson;"> ${response.data.commentLikes}</span></p></div>
+                const content = `<div><b style="margin-right:8px;">${response.data.username}</b><p class='comment-content'>${response.data.content}</p><p><i data-id="${response.data.commentPk}" data-object="comment" class="${response.data.isLike} fa-heart like-now-${response.data.commentPk}" style="color:crimson"></i><span id="like-count-comment-${response.data.commentPk}" style="color: crimson;"> ${response.data.commentLikes}</span></p></div>
                                 <div class="d-flex justify-content-end">
                                 <a class='update-now-${response.data.commentPk} mr-3' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/update/">o</a>
                                 <a class='delete-now-${response.data.commentPk}' style="color: lightgrey" data-id="${response.data.commentPk}" href="/movies/${response.data.commentPk}/delete/">x</a>
@@ -227,7 +228,7 @@ commentForms.forEach(function(button){
                 e.target.reset()
                 const content = `<div class="mb-1 d-flex justify-content-between" id="${response.data.commentPk}">
                                     <div>
-                                        <a href="#"><b style="margin-right:8px;">${response.data.username}</b></a><p class='comment-content'>${response.data.content}</p>
+                                        <b style="margin-right:8px;">${response.data.username}</b><p class='comment-content'>${response.data.content}</p>
                                         <p><i data-id="${response.data.commentPk}" data-object="comment" class="far fa-heart like-now-${response.data.commentPk}" style="color:crimson"></i><span id="like-count-comment-${response.data.commentPk}" style="color: crimson;"> 0</span></p>
                                     </div>
                                     <div class="d-flex justify-content-end">
