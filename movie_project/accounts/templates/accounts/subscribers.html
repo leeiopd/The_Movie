@@ -1,6 +1,8 @@
 {% extends 'accounts/accounts_base.html' %}
 {% block accounts %}
 <div class="container">
+
+{% if subscribers %}
 {% for subscriber in subscribers %}
 
     <br>
@@ -8,5 +10,19 @@
     <br>
 
 {% endfor %}
+
+{% else %}
+<div class="jumbotron">
+        <h1 class="display-4 ml-3">{% if user_info == request.user %}아직 나를 구독한 유저가 없습니다 ㅜㅜ{% else %}{{ user_info.username }} 님을 구독한 유저가 없습니다. {% endif %}</h1>
+        <hr class="my-4">
+        <p class="ml-5">{% if user_info == request.user %}활발한 활동을 통해 구독자를 만들어 보세요!{% else %}{{ user_info.username }} 님을 구독해 보세요!{% endif %}</p>
+        <p class="ml-5">{% if user_info != request.user %}구독을 통해 {{ user_info.username }}님의 활동과 최신 리뷰를 피드로 받아 볼 수 있습니다.{% endif %}</p>
+        <div class="d-flex flex-row-reverse mr-5">
+        <a class="btn btn-primary btn-lg " href="{% url 'accounts:user_info' user_info.id %}" role="button">확인</a>
+    </div>
 </div>
+    
+{% endif %}
+</div>
+
 {% endblock %}

@@ -13,8 +13,7 @@ from django.views.decorators.http import require_http_methods
 @require_http_methods(['GET'])
 def userInfo(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
-    user = get_object_or_404(get_user_model(), pk=request.user.pk)
-    context = {'user_info':user_info, 'user':user}
+    context = {'user_info':user_info}
     return render(request, 'accounts/info.html', context)
 
 @require_http_methods(['GET', 'POST'])
@@ -75,7 +74,7 @@ def updateGenre(request):
     else:
         user_genres = user.like_genres.all()
         context = {'user_genres': user_genres}
-        return render(request, 'accounts/genre.html', context)
+        return render(request, 'accounts/updateGenres.html', context)
 
 
 @require_http_methods(['GET', 'POST'])
@@ -118,46 +117,54 @@ def subscribe(request, user_id):
 
 @login_required
 def subscribeList(request, user_id):
-    user = get_object_or_404(get_user_model(), pk=user_id)
-    subscribes = user.subscribe.all()
-    context = {'subscribes': subscribes}
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
+    subscribes = user_info.subscribe.all()
+    context = {'subscribes': subscribes, 'user_info':user_info}
     return render(request, 'accounts/subscribes.html', context)
 
 
 @login_required
 def subscriberList(request, user_id):
-    user = get_object_or_404(get_user_model(), pk=user_id)
-    subscribers = user.subscribers.all()
-    context = {'subscribers':subscribers}
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
+    subscribers = user_info.subscribers.all()
+    context = {'subscribers':subscribers, 'user_info':user_info}
     return render(request, 'accounts/subscribers.html', context)
 
 
 
 def viewfeed(request, user_id):
-    user = get_object_or_404(get_user_model(), pk=user_id)
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
     # feeds = user.subscribe.prefetch_related('review_set')
-    subscribes = user.subscribe.values_list('id')
+    subscribes = user_info.subscribe.values_list('id')
     feeds = Review.objects.filter(user_id__in=subscribes).order_by('-id')
     # feeds = []
     # for user in allSubUser:
     #     feeds.append(user.review_set.all())
 
-    context = {'feeds': feeds}
+    context = {'feeds': feeds, 'user_info':user_info}
     return render(request, 'accounts/feed.html', context)
 
-
-def likeCasts(request, user_id):
-    user = get_object_or_404(get_user_model(), pk=user_id)
-    casts = user.like_casts.all()
-    context = {'casts': casts}
-    return render(request, 'accounts/casts.html', context)
-
-
-def likeDirectors(request, user_id):
-    user = get_object_or_404(get_user_model(), pk=user_id)
-    directors = user.like_directors.all()
-    context = {'directors': directors}
+def favoritesDirectors(request, user_id):
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
+    directors = user_info.like_directors.all()
+    context = {'directors': directors, 'user_info':user_info}
     return render(request, 'accounts/directors.html', context)
 
-def sidebar(request):
-    return render(request, 'accounts/accounts_base.html')
+def favoritesCasts(request, user_id):
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
+    casts = user_info.like_casts.all()
+    context = {'casts': casts, 'user_info':user_info}
+    return render(request, 'accounts/casts.html', context)
+
+def favoritesGenres(request, user_id):
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
+    genres = user_info.like_genres.all()
+    context = {'genres': genres, 'user_info':user_info}
+    return render(request, 'accounts/genres.html', context)
+
+def favoritesMovies(request, user_id):
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
+    movies = user_info.like_movies.all()
+    context = {'movies': movies, 'user_info':user_info}
+    return render(request, 'accounts/movies.html', context)
+

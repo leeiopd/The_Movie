@@ -15,9 +15,10 @@ urlpatterns = [
     path('<int:user_id>/subscribeList/', views.subscribeList, name='subscribeList'),
     path('<int:user_id>/subscriberList/', views.subscriberList, name='subscriberList'),
     path('<int:user_id>/feed/', views.viewfeed, name='feed'),
-    path('<int:user_id>/likes/casts/', views.likeCasts, name='likeCasts'),
-    path('<int:user_id>/likes/directors/', views.likeDirectors, name='directors'),
-    path('sidebar/', views.sidebar, name='sidebar'),
+    path('<int:user_id>/favorites/casts/', views.favoritesCasts, name='favoritesCasts'),
+    path('<int:user_id>/favorites/directors/', views.favoritesDirectors, name='favoritesDirectors'),
+    path('<int:user_id>/favorites/genres/', views.favoritesGenres, name='favoritesGenres'),
+    path('<int:user_id>/favorites/movies/', views.favoritesMovies, name='favoritesMovies'),
 
     
 
