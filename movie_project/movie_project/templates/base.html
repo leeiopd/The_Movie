@@ -35,7 +35,7 @@
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP|Noto+Sans+TC|Open+Sans|Sunflower:300" rel="stylesheet">
     <style>
         body {
-          font-family: 'Sunflower:300', 'Open Sans', 'Noto Sans TC', 'Noto Sans JP', sans-serif;   
+          font-family: 'Sunflower', 'Open Sans', 'Noto Sans TC', 'Noto Sans JP', sans-serif;   
         }
         .card-header {
             background-color: white !important;
@@ -69,9 +69,8 @@
             </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-            <li class="nav-item active"><img style="width:40px;height:40px;border-radius:20px;margin-right:10px" src="#" alt="image"></li>
             <li class="nav-item active">
-                <a class="nav-link" href="#"><b>{{ request.user.username }}</b></a>
+                <a class="nav-link" href="#"><i class="fas fa-lg fa-chess-{% if user.profile.point >= 50000 %}king{% elif user.profile.point >= 10000 %}queen{% elif user.profile.point >= 5000 %}bishop{% elif user.profile.point >= 1000 %}knight{% elif user.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i><b class="ml-2">{{ user.username }}</b></a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'accounts:user_info' request.user.id %}">My Page</a>

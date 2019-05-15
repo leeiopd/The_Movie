@@ -4,10 +4,11 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
-from .models import Movie, Review, Comment
+from .models import Movie, Review, Comment, Director, Cast
 from .forms import ReviewForm, CommentForm
 
 # Create your views here.
+@login_required
 def main(request):
     movies = Movie.objects.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:20]
     # 리뷰 작성 여부 확인
@@ -15,6 +16,7 @@ def main(request):
     context = {'movies': movies, 'user_movies': user_movies}
     return render(request, 'movies/main.html', context)
 
+@login_required
 def detail(request, movie_pk):
     movie = Movie.objects.annotate(score_avg=Avg('review__score')).get(pk=movie_pk)
     reviewed = False
@@ -98,6 +100,7 @@ def create_comment(request, movie_pk, review_pk):
                     'moviePk' : movie_pk,
                     'reviewPk': review_pk,
                     'commentPk': comment.pk,
+                    'count': review.comment_set.count()
                     }
             return JsonResponse(data)
     else:
@@ -108,10 +111,12 @@ def create_comment(request, movie_pk, review_pk):
 def delete_comment(request, comment_pk):
     if request.is_ajax():
         comment = get_object_or_404(Comment, pk=comment_pk)
+        review = comment.review
         movie_pk = comment.review.movie.pk
         if request.user == comment.user or request.user.is_superuser:
             comment.delete()
-            return redirect('movies:detail', movie_pk)
+            data = {'count': review.comment_set.count(), 'reviewPk': review.pk}
+            return JsonResponse(data)
         else:
             messages.add_message(request, messages.WARNING, 'You are not a writer.')
             return redirect('movies:detail', movie_pk)
@@ -127,25 +132,103 @@ def update_comment(request, comment_pk):
         if request.user == comment.user or request.user.is_superuser:
             form = CommentForm(request.POST, instance=comment)
             if form.is_valid():
-                print('valid')
-                comment = form.save(commit=False)
-                # comment.user = request.user
-                # review = get_object_or_404(Review, pk=review_pk)
-                # comment.review = review
-                comment.save()
+                comment = form.save()
+                if comment.like_users.filter(pk=request.user.id).exists():
+                    is_like = "fas"
+                else:
+                    is_like = "far"
                 data = {'userPk': comment.user.pk,
                         'username': comment.user.username,
                         'content': comment.content,
                         'moviePk' : comment.review.movie.pk,
                         'reviewPk': comment.review.pk,
                         'commentPk': comment.pk,
+                        'commentLikes': comment.like_users.count(),
+                        'isLike': is_like,
                         }
                 return JsonResponse(data)
-            print('hi')
-            return JsonResponse({'error': str(form)})
         else:
             messages.add_message(request, messages.WARNING, 'You are not a writer.')
             return redirect('movies:detail', movie_pk)
     else:
         return HttpResponseBadRequest
 
+@login_required
+@require_POST
+def movie_like(request, movie_pk):
+    if request.is_ajax():
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        user = request.user
+        if movie.like_users.filter(pk=user.id).exists():
+            movie.like_users.remove(user)
+            is_like = False
+        else:
+            movie.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like, 'count': movie.like_users.count()})
+    else:
+        return HttpResponseBadRequest
+
+@login_required
+@require_POST
+def cast_like(request, cast_pk):
+    if request.is_ajax():
+        cast = get_object_or_404(Cast, pk=cast_pk)
+        user = request.user
+        if cast.like_users.filter(pk=user.id).exists():
+            cast.like_users.remove(user)
+            is_like = False
+        else:
+            cast.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like})
+    else:
+        return HttpResponseBadRequest
+
+@login_required
+@require_POST
+def director_like(request, director_pk):
+    if request.is_ajax():
+        director = get_object_or_404(Director, pk=director_pk)
+        user = request.user
+        if director.like_users.filter(pk=user.id).exists():
+            director.like_users.remove(user)
+            is_like = False
+        else:
+            director.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like})
+    else:
+        return HttpResponseBadRequest
+
+@login_required
+@require_POST
+def review_like(request, review_pk):
+    if request.is_ajax():
+        review = get_object_or_404(Review, pk=review_pk)
+        user = request.user
+        if review.like_users.filter(pk=user.id).exists():
+            review.like_users.remove(user)
+            is_like = False
+        else:
+            review.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like, 'count': review.like_users.count()})
+    else:
+        return HttpResponseBadRequest
+
+@login_required
+@require_POST
+def comment_like(request, comment_pk):
+    if request.is_ajax():
+        comment = get_object_or_404(Comment, pk=comment_pk)
+        user = request.user
+        if comment.like_users.filter(pk=user.id).exists():
+            comment.like_users.remove(user)
+            is_like = False
+        else:
+            comment.like_users.add(user)
+            is_like = True
+        return JsonResponse({'is_like': is_like, 'count': comment.like_users.count()})
+    else:
+        return HttpResponseBadRequest
