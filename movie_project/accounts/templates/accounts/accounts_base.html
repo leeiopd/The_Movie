@@ -1,37 +1,71 @@
 {% extends 'base.html' %}
 {% block body %}
     <!-- Sidebar -->
+
+
 <div class="d-flex">
     <div class="p-2 vh-100 bd-highlight" style="width: 20%!important;">
+            {% if user_info == request.user %}
         <table class="table table-hover">
             <tbody>
                 <tr>
-                    <td><span class="ml-4"><a href="{% url 'accounts:user_info' request.user.id %}">My page</a></span></td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:user_info' user_info.id %}">My page</a></span></td>
                 </tr>
                 <tr>
-                    <td>새 피드 확인</td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:feed' user_info.id %}">새 피드 확인</a></span></td>
                 </tr>
                 <tr>
-                    <td>구독 목록</td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:subscribeList' user_info.id %}">구독 목록</a></span></td>
                 </tr>
                 <tr>
-                    <td>구독자 리스트</td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:subscriberList' user_info.id %}">구독자 리스트</a></span></td>
                 </tr>
                 <tr>
-                    <td>내 배우</td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesMovies' user_info.id %}">내 영화</a></span></td>
                 </tr>
                 <tr>
-                    <td>내 감독</td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesGenres' user_info.id %}">내 장르</a></span></td>
                 </tr>
                 <tr>
-                    <td>내 장르</td>
+                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesCasts' user_info.id %}">내 배우</a></span></td>
+                </tr>
+                <tr>
+                    <td><span class="ml-4"><a href="{% url 'accounts:favoritesDirectors' user_info.id %}">내 감독</a></span></td>
                 </tr>
             </tbody>
         </table>
+        {% else %}
+        <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <td><span class="ml-4"><a href="{% url 'accounts:user_info' user_info.id %}">유저 정보</a></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ml-4"><a href="{% url 'accounts:subscribeList' user_info.id %}">구독 목록</a></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ml-4"><a href="{% url 'accounts:subscriberList' user_info.id %}">구독자 리스트</a></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesMovies' user_info.id %}">내 영화</a></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesGenres' user_info.id %}">내 장르</a></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesCasts' user_info.id %}">내 배우</a></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ml-4"><a href="{% url 'accounts:favoritesDirectors' user_info.id %}">내 감독</a></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endif %}
     </div>
     <div class="p-2 vh-100 w-100 bd-highlight">
     {% block accounts %}
     {% endblock %}
     </div>
-<div>
+</div>
+
 {% endblock %}

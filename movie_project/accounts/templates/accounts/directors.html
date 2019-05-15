@@ -1,15 +1,15 @@
 {% extends 'accounts/accounts_base.html' %}
 {% block accounts %}
 <div class="container">
-{% if casts %}
-{% for cast in casts %}
+{% if directors %}
+{% for director in directors %}
 
 
 
 {% endfor %}
 {% else %}
 <div class="jumbotron">
-        <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 좋아하는 배우가 비어있네요.{% else %}{{ user_info.username }} 님이 좋아하는 배우가 없어요.{% endif %}</h1>
+        <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 좋아하는 감독이 비어있네요.{% else %}{{ user_info.username }} 님이 좋아하는 감독이 없어요.{% endif %}</h1>
         <hr class="my-4">
         <div class="d-flex flex-row-reverse mr-5">
         <a class="btn btn-primary btn-lg mr-2 " href="{% url 'accounts:user_info' user_info.id %}" role="button">확인</a>

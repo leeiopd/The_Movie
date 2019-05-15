@@ -1,0 +1,54 @@
+{% extends 'accounts/accounts_base.html' %}
+{% block accounts %}
+<div class="container">
+{% if genres %}
+{% for genre in genres %}
+<table class="table">
+        <thead>
+            <tr>
+                <th scope="row" colspan=2 style="text-align:center">{{genre.name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">title</th>
+                <td>ㅁㅁㅁ</td>
+            </tr>
+            <tr>
+                <th scope="row">original title</th>
+                <td>ㅁㅁ</td>
+            </tr>
+            <tr>
+                <th scope="row">gernes</th>
+                <td>
+                    ㅁㅁㅁ
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">score</th>
+                <td>ㅁㅁ</td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td></td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+{% endfor %}
+{% else %}
+<div class="jumbotron">
+        <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 좋아하는 장르가 비어있네요.{% else %}{{ user_info.username }} 님이 좋아하는 장르가 없어요 ㅜㅜ {% endif %}</h1>
+        <hr class="my-4">
+        <div class="d-flex flex-row-reverse mr-5">
+        <a class="btn btn-primary btn-lg mr-2 " href="{% url 'accounts:user_info' user_info.id %}" role="button">확인</a>
+        {% if user_info == request.user %}<a class="btn btn-primary btn-lg mr-3" href="{% url 'accounts:updateGenre' %}" role="button">등록하기</a>{% endif %}
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock %}

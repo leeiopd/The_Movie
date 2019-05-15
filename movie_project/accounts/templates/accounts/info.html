@@ -10,14 +10,14 @@
     {{ user_info.profile.point }}
     <br>
     {% for genre in user_info.like_genres.all %}
-    {{ genre.name}}
+    {{ genre.name }}
     <br>
     {% endfor %}
     <br>
     구독자 : <span id="subscriber-count-{{user_info.pk}}">{{ user_info.subscribers.all.count }}</span>
     <br>
-    {% if user == user_info %}
-    <a href="{% url 'accounts:subscriberList' user.pk  %}">
+    {% if request.user == user_info %}
+    <a href="{% url 'accounts:subscriberList' request.user.pk  %}">
     {% else %}
     <a href="{% url 'accounts:subscriberList' user_info.pk  %}">
     {% endif %}
@@ -25,8 +25,8 @@
     <br>
     구독 : {{ user_info.subscribe.all.count }}
     <br>
-    {% if user == user_info %}
-    <a href="{% url 'accounts:subscribeList' user.pk %}">
+    {% if request.user == user_info %}
+    <a href="{% url 'accounts:subscribeList' request.user.pk %}">
         {% else %}
         <a href="{% url 'accounts:subscribeList' user_info.pk %}">
         {% endif %}
@@ -34,24 +34,22 @@
     
     <br>
 
-    {% if user != user_info %}
+    {% if request.user != user_info %}
     <button class="subscribe-button" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
     {% endif %}
     <br>
-    {% if user == user_info %}
-    <a href="{% url 'accounts:feed' user.pk %}">
-    {% else %}
-    <a href="{% url 'accounts:feed' user_info.pk %}">
+    {% if request.user == user_info %}
+    <a href="{% url 'accounts:feed' request.user.pk %}">New 피드</a>
     {% endif %}
-    New 피드</a>
+    
     <br>
 
 
-    {% if user == user_info %}
+    {% if request.user == user_info %}
     <a href="{% url 'accounts:updateUser' %}">프로필 수정</a>
     {% endif %}
 </div>
-    {% if user != user_info %}
+    {% if request.user != user_info %}
     <script>
         const subscribeButton = document.querySelector('.subscribe-button')
         subscribeButton.addEventListener('click', function(e){
