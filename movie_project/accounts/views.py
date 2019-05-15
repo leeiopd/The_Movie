@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile
 from movies.models import Genre, Review
 from .forms import CreateForm, LoginForm, ProfileForm
-from django.contrib.auth import get_user_model, login, authenticate, logout
+from django.contrib.auth import get_user_model, authenticate, logout
+from django.contrib.auth import login as user_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.db.models import Avg
 
 # Create your views here.
 
@@ -26,7 +28,7 @@ def signup(request):
             if userform.is_valid():
                 user = userform.save()
                 Profile.objects.create(user=user, point=0)
-                login(request, user)
+                user_login(request, user)
                 return redirect('accounts:updateUser')
         else:
             userform = CreateForm()
@@ -78,14 +80,14 @@ def updateGenre(request):
 
 
 @require_http_methods(['GET', 'POST'])
-def signin(request):
+def login(request):
     if request.user.is_authenticated:
         return redirect('movies:main')
     else:
         if request.method == 'POST':
             userLoginform = AuthenticationForm(request, request.POST)
             if userLoginform.is_valid():
-                login(request, userLoginform.get_user())
+                user_login(request, userLoginform.get_user())
                 return redirect('movies:main')
         else:
             userLoginform = AuthenticationForm()
@@ -159,7 +161,24 @@ def favoritesCasts(request, user_id):
 def favoritesGenres(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     genres = user_info.like_genres.all()
-    context = {'genres': genres, 'user_info':user_info}
+    genre_movie_lists=[]
+    movie_check = []
+    print(len(genres))
+    for genre in genres:
+        genre_movies=[]
+        genre_movies.append(genre.movies.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:10])
+        temp_genre_movies = []
+        for movies in genre_movies:
+            temp_movies = []
+            for movie in movies:
+                if len(temp_movies) < 5:
+                    if movie not in movie_check:
+                        movie_check.append(movie)
+                        temp_movies.append(movie)
+            temp_genre_movies.append(temp_movies)
+            # print(len(temp_movies))
+        genre_movie_lists.append(temp_genre_movies)
+    context = {'genre_movie_lists': genre_movie_lists, 'user_info':user_info, 'genres': genres}
     return render(request, 'accounts/genres.html', context)
 
 def favoritesMovies(request, user_id):
