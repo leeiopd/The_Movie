@@ -19,4 +19,6 @@ urlpatterns = [
     path('<int:user_id>/favorites/directors/', views.favoritesDirectors, name='favoritesDirectors'),
     path('<int:user_id>/favorites/genres/', views.favoritesGenres, name='favoritesGenres'),
     path('<int:user_id>/favorites/movies/', views.favoritesMovies, name='favoritesMovies'),
+    path('<int:user_id>/reivewsList/', views.reviewsList, name='reviewsList'),
+    path('rank/', views.rank, name='rank')
 ]

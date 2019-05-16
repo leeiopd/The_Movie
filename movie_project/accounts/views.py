@@ -119,33 +119,42 @@ def subscribe(request, user_id):
 
 @login_required
 def subscribeList(request, user_id):
+    profiles = Profile.objects.all().order_by('-point')
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     subscribes = user_info.subscribe.all()
-    context = {'subscribes': subscribes, 'user_info':user_info}
+    context = {'subscribes': subscribes, 'user_info':user_info, 'profiles':profiles}
     return render(request, 'accounts/subscribes.html', context)
 
 
 @login_required
 def subscriberList(request, user_id):
+    profiles = Profile.objects.all().order_by('-point')
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     subscribers = user_info.subscribers.all()
-    context = {'subscribers':subscribers, 'user_info':user_info}
+    context = {'subscribers':subscribers, 'user_info':user_info, 'profiles':profiles}
     return render(request, 'accounts/subscribers.html', context)
 
 
 
+
+@login_required
 def viewfeed(request, user_id):
-    user_info = get_object_or_404(get_user_model(), pk=user_id)
-    # feeds = user.subscribe.prefetch_related('review_set')
-    subscribes = user_info.subscribe.values_list('id')
-    feeds = Review.objects.filter(user_id__in=subscribes).order_by('-id')
-    # feeds = []
-    # for user in allSubUser:
-    #     feeds.append(user.review_set.all())
+    if request.user.id == user_id:
+        user_info = get_object_or_404(get_user_model(), pk=user_id)
+        # feeds = user.subscribe.prefetch_related('review_set')
+        subscribes = user_info.subscribe.values_list('id')
+        feeds = Review.objects.filter(user_id__in=subscribes).order_by('-id')
+        # feeds = []
+        # for user in allSubUser:
+        #     feeds.append(user.review_set.all())
 
-    context = {'feeds': feeds, 'user_info':user_info}
-    return render(request, 'accounts/feed.html', context)
+        context = {'feeds': feeds, 'user_info':user_info}
+        return render(request, 'accounts/feed.html', context)
+    else:
+        return redirect('movies:main')
 
+
+@login_required
 def favoritesDirectors(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     directors = user_info.like_directors.all()
@@ -158,7 +167,7 @@ def favoritesDirectors(request, user_id):
     return render(request, 'accounts/directors.html', context)
 
 
-
+@login_required
 def favoritesCasts(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     casts = user_info.like_casts.all()
@@ -170,6 +179,8 @@ def favoritesCasts(request, user_id):
     context = {'cast_movie_lists': cast_movie_lists, 'user_info':user_info, 'casts': casts}
     return render(request, 'accounts/casts.html', context)
 
+
+@login_required
 def favoritesGenres(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     genres = user_info.like_genres.all()
@@ -181,9 +192,27 @@ def favoritesGenres(request, user_id):
     context = {'genre_movie_lists': genre_movie_lists, 'user_info':user_info, 'genres': genres}
     return render(request, 'accounts/genres.html', context)
 
+
+@login_required
 def favoritesMovies(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     movies = user_info.like_movies.all()
     context = {'movies': movies, 'user_info':user_info}
     return render(request, 'accounts/movies.html', context)
 
+
+
+@login_required
+def reviewsList(request, user_id):
+    user_info = get_object_or_404(get_user_model(), pk=user_id)
+    reviews = user_info.review_set.order_by('-id')
+
+    context = {'reviews': reviews, 'user_info':user_info}
+    return render(request, 'accounts/reviews.html', context)
+
+@login_required
+def rank(request):
+    profiles = Profile.objects.all().order_by('-point')
+    user_info = get_object_or_404(get_user_model(), pk=request.user.id)
+    context = {'profiles':profiles, 'user_info':user_info}
+    return render(request, 'accounts/rank.html', context)

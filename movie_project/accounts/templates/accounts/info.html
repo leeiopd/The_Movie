@@ -1,7 +1,6 @@
 {% extends 'accounts/accounts_base.html' %}
 {% block accounts %}
 <div class="container">
-
     <table class="table">
         <tbody>
             <tr>
@@ -38,13 +37,21 @@
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Subscribes</th>
-                <td>{{ user_info.subscribe.all.count }}&nbsp;명</td>
+                <td><a href="{% url 'accounts:subscribeList' user_info.id %}">{{ user_info.subscribe.all.count }}&nbsp;명</a></td>
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Subscribers</th>
-                <td><span id="subscriber-count-{{user_info.id}}">{{ user_info.subscribers.all.count }}</span><span>&nbsp;명</span>{% if request.user != user_info %}
+                <td><a href="{% url 'accounts:subscriberList' user_info.id %}"><span id="subscriber-count-{{user_info.id}}">{{ user_info.subscribers.all.count }}</span><span>&nbsp;명</span></a>{% if request.user != user_info %}
     <button class="subscribe-button ml-3" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
     {% endif %}</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Reviews</th>
+                <td><a href="{% url 'accounts:reviewsList' user_info.id %}">{{ user_info.review_set.count }}&nbsp;개</a></td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Comments</th>
+                <td>{{ user_info.comment_set.count }}&nbsp;개<a href=""></a></td>
             </tr>
         </tbody>
     </table>

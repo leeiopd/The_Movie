@@ -15,30 +15,50 @@
             </tr>
     </thead>
     <tbody>
-        {% for subscriber in subscribers %}
+        {% for profile in profiles %}
+        {% if user_info in profile.user.subscribe.all %}
         <tr>
             <td>
-                {{ subscriber.username }}
+                {{ profile.user.username }}
             </td>
             <td>
-            <i class="fas fa-lg fa-chess-{% if subscriber.profile.point >= 50000 %}king{% elif subscribe.profile.point >= 10000 %}queen{% elif subscribe.profile.point >= 5000 %}bishop{% elif subscribe.profile.point >= 1000 %}knight{% elif subscribe.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i>
+            <i class="fas fa-lg fa-chess-{% if profile.point >= 50000 %}king{% elif profile.point >= 10000 %}queen{% elif profile.point >= 5000 %}bishop{% elif profile.point >= 1000 %}knight{% elif profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i>
             </td>
             <td>
-            {{ subscriber.profile.point }}
+            {{ profile.point }}
             </td>
             <td>
-                {{ subscriber.like_reviews.count }}
+                {{ profile.user.review_set.count }}
             </td>
             <td>
-                {{ subscriber.like_comments.count }}
+                {{ profile.user.comment_set.count }}
             </td>
             <td>
-                <a href="{% url 'accounts:user_info' subscriber.pk %}">정보보기</a>
+                <a href="{% url 'accounts:user_info' profile.user.pk %}">정보보기</a>
+            </td>
+            <td>
+                    {% if profile.user == request.user %}
+    
+                    <a class="text-center" href="{% url 'accounts:user_info' request.user.id %}">ME</a>
+                    {% else %}
+                    <button class="subscribe-button ml-3" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
+                    {% endif %}
+            </td>
+            <td>
+                {% if profile.user == request.user %}
+                {% else %}
+                <a href="{% url 'accounts:user_info' profile.user.pk %}">정보보기</a>
+                {% endif %}
             </td>
         </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
-</table>    
+</table>
+<hr class="my-4">
+<div class="d-flex flex-row-reverse mr-5">
+        <a class="ml-3" href="{% url 'accounts:user_info' user_info.id %}" role="button">돌아가기</a>
+</div>    
 
 {% else %}
 <div class="jumbotron">
@@ -47,11 +67,43 @@
         <p class="ml-5">{% if user_info == request.user %}활발한 활동을 통해 구독자를 만들어 보세요!{% else %}{{ user_info.username }} 님을 구독해 보세요!{% endif %}</p>
         <p class="ml-5">{% if user_info != request.user %}구독을 통해 {{ user_info.username }}님의 활동과 최신 리뷰를 피드로 받아 볼 수 있습니다.{% endif %}</p>
         <div class="d-flex flex-row-reverse mr-5">
-        <a class="btn btn-primary btn-lg " href="{% url 'accounts:user_info' user_info.id %}" role="button">확인</a>
+        <a href="{% url 'accounts:user_info' user_info.id %}">확인</a>
     </div>
 </div>
     
 {% endif %}
 </div>
+
+
+
+<script>
+        const subscribeButton = document.querySelector('.subscribe-button')
+        subscribeButton.addEventListener('click', function(e){
+            const userId = e.target.dataset.id
+            // is_ajax() True 를 위한 것
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+            // csrf_token을 위한 것
+            axios.defaults.xsrfCookieName = 'csrftoken'
+            axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+            // scrftoken을 header에 담을 때 X-CSRFToken으로 보내라고 Django에 설정되어 있음.
+            
+            axios.post(`/accounts/${userId}/subscribe/`)
+            .then(function(response){
+                const SubscriberCount = document.querySelector(`#subscriber-count-${userId}`)
+                SubscriberCount.innerText = response.data.subscribe_count
+                if (response.data.is_subscribe)
+                {
+                    e.target.innerText = "구독취소"
+                }
+                else
+                {
+                    e.target.innerText = "구독"
+                }
+            })
+        })
+    
+</script>
+
+
 
 {% endblock %}

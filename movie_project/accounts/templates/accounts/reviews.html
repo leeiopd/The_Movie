@@ -1,0 +1,40 @@
+{% extends 'accounts/accounts_base.html' %}
+{% block accounts %}
+<div class="container">
+    {% if reviews %}
+    {% for review in reviews %}
+    <div class="row">
+            <div class="col-3 text-center">
+                <a href="{% url 'movies:detail' review.movie.id %}"><img src="{{ review.movie.poster_path }}" style="width:60%"></a>
+            </div>
+            <div class="col-6">
+              <table class="table">
+                  <tbody>
+                      <tr>
+                          <td><a href="{% url 'accounts:user_info' review.user.id %}"><span><i class="fas fa-lg fa-chess-{% if user.profile.point >= 50000 %}king{% elif user.profile.point >= 10000 %}queen{% elif user.profile.point >= 5000 %}bishop{% elif user.profile.point >= 1000 %}knight{% elif user.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i>&nbsp;&nbsp;{{ review.user.username }}&nbsp;&nbsp;({{ review.user.profile.point }} point)</span></a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><span>{{ review.title }}</span> <span class="d-flex flex-row-reverse">평점&nbsp;:&nbsp;&nbsp;{{ review.score }}&nbsp;&nbsp;점</span></th>
+                      </tr>
+                      <tr>
+                          <td>{{ review.content }}</td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+    </div>
+    <hr class="my-3">
+    {% endfor %}
+    {% else %}
+    <div class="jumbotron">
+            <h1 class="display-4 ml-3">작성된 리뷰가 없습니다!</h1>
+            <hr class="my-4">
+            <p class="ml-5">아직 리뷰를 작성하지 않으셨네요 ㅠㅠ</p>
+            <div class="d-flex flex-row-reverse mr-5">
+            <a class="btn btn-primary btn-lg " href="{% url 'accounts:user_info' request.user.id %}" role="button">확인</a>
+            </div>
+          </div>
+    {% endif %}
+    </div>
+
+{% endblock %}

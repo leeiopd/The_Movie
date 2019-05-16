@@ -14,7 +14,7 @@
                       <td><a href="{% url 'accounts:user_info' review.user.id %}"><span>{{ review.user.username }}<i class="fas fa-lg fa-chess-{% if user.profile.point >= 50000 %}king{% elif user.profile.point >= 10000 %}queen{% elif user.profile.point >= 5000 %}bishop{% elif user.profile.point >= 1000 %}knight{% elif user.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i>({{ review.user.profile.point }} point)</span></a></td>
                   </tr>
                   <tr>
-                    <th scope="row">{{ review.title }} // 평점&nbsp;:&nbsp;&nbsp;{{ review.score }}&nbsp;&nbsp;점</th>
+                    <th scope="row"><span>{{ review.title }}</span> <span class="d-flex flex-row-reverse">평점&nbsp;:&nbsp;&nbsp;{{ review.score }}&nbsp;&nbsp;점</span></th>
                   </tr>
                   <tr>
                       <td>{{ review.content }}</td>

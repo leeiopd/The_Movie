@@ -1,0 +1,88 @@
+{% extends 'accounts/accounts_base.html' %}
+{% block accounts %}
+
+<div class="container">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">LEVEL</th>
+                <th scope="col">POINT</th>
+                <th scope="col">REVIEW</th>
+                <th scope="col">COMMENT</th>
+                <th scope="col"></th>
+                </tr>
+        </thead>
+        <tbody>
+            {% for profile in profiles %}
+            {% if profile.user.username == 'admin' %}
+            {% else %}
+            <tr>
+                <td>
+                    {{ profile.user.username }}
+                </td>
+                <td>
+                <i class="fas fa-lg fa-chess-{% if profile.point >= 50000 %}king{% elif profile.point >= 10000 %}queen{% elif profile.point >= 5000 %}bishop{% elif profile.point >= 1000 %}knight{% elif profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i>
+                </td>
+                <td>
+                {{ profile.point }}
+                </td>
+                <td>
+                    {{ profile.user.review_set.count }}
+                </td>
+                <td>
+                    {{ profile.user.comment_set.count }}
+                </td>
+                <td>
+                        {% if profile.user == request.user %}
+                        <div class="text-center">
+                                <a  href="{% url 'accounts:user_info' request.user.id %}">ME</a>
+                                </div>
+                        {% else %}
+                        <button class="subscribe-button ml-3" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
+                        {% endif %}
+                </td>
+                <td>
+                    {% if profile.user == request.user %}
+                    
+                    {% else %}
+                    <a href="{% url 'accounts:user_info' profile.user.pk %}">정보보기</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>    
+</div>
+
+
+<script>
+        const subscribeButton = document.querySelector('.subscribe-button')
+        subscribeButton.addEventListener('click', function(e){
+            const userId = e.target.dataset.id
+            // is_ajax() True 를 위한 것
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+            // csrf_token을 위한 것
+            axios.defaults.xsrfCookieName = 'csrftoken'
+            axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+            // scrftoken을 header에 담을 때 X-CSRFToken으로 보내라고 Django에 설정되어 있음.
+            
+            axios.post(`/accounts/${userId}/subscribe/`)
+            .then(function(response){
+                const SubscriberCount = document.querySelector(`#subscriber-count-${userId}`)
+                SubscriberCount.innerText = response.data.subscribe_count
+                if (response.data.is_subscribe)
+                {
+                    e.target.innerText = "구독취소"
+                }
+                else
+                {
+                    e.target.innerText = "구독"
+                }
+            })
+        })
+    
+</script>
+
+{% endblock %}
