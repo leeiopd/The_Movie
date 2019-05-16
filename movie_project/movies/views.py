@@ -4,7 +4,8 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
-from .models import Movie, Review, Comment, Director, Cast
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import Movie, Review, Comment, Director, Cast, Genre
 from .forms import ReviewForm, CommentForm
 
 # Create your views here.
@@ -32,6 +33,36 @@ def main(request):
                 'movies_user': movies_user,
                 }
     return render(request, 'movies/main.html', context)
+
+@login_required
+def movie_list(request):
+    movies = Movie.objects.all()
+    genres = Genre.objects.all()
+    paginator = Paginator(movies, 8)
+    page = request.GET.get('page')
+    contacts = paginator.get_page(page)
+    context = {'movies':movies, 'contacts': contacts, 'genres': genres}
+    return render(request, 'movies/list.html', context)
+
+@login_required
+def score_filter(request, score):
+    movies = Movie.objects.filter(vote_average__gt=score).order_by('-vote_average')
+    genres = Genre.objects.all()
+    paginator = Paginator(movies, 8)
+    page = request.GET.get('page')
+    contacts = paginator.get_page(page)
+    context = {'movies':movies, 'contacts': contacts, 'genres': genres}
+    return render(request, 'movies/list.html', context)
+
+@login_required
+def genre_filter(request, genre_pk):
+    movies = Movie.objects.filter(genres__pk=genre_pk).order_by('-vote_average')
+    genres = Genre.objects.all()
+    paginator = Paginator(movies, 8)
+    page = request.GET.get('page')
+    contacts = paginator.get_page(page)
+    context = {'movies':movies, 'contacts': contacts, 'genres': genres}
+    return render(request, 'movies/list.html', context)
 
 @login_required
 def detail(request, movie_pk):
