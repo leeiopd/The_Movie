@@ -64,7 +64,7 @@
     {% if user_info == request.user %}<a href="{% url 'accounts:rank' %}" role="button">구독하러 가기</a>{% endif %}
     
 </div>
-{% else %}
+{% else %}  
 
 <div class="jumbotron">
         <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 구독한 유저가 없습니다.{% else %}{{ user_info.username }} 님이 구독한 유저가 없습니다. {% endif %}</h1>

@@ -5,6 +5,7 @@ app_name = 'movies'
 
 urlpatterns = [
     path('', views.main, name='main'),
+    path('list/', views.movie_list, name='list'),
     path('<int:movie_pk>/', views.detail, name='detail'),
     path('<int:movie_pk>/create/', views.create, name='create'),
     path('<int:movie_pk>/<int:review_pk>/delete/', views.delete, name='delete'),
@@ -18,4 +19,6 @@ urlpatterns = [
     path('<int:cast_pk>/cast_like/', views.cast_like, name='cast_like'),
     path('<int:review_pk>/review_like/', views.review_like, name='review_like'),
     path('<int:comment_pk>/comment_like/', views.comment_like, name='comment_like'),
+    path('list/score_filter/<int:score>/', views.score_filter, name='score_filter'),
+    path('list/genre_filter/<int:genre_pk>/', views.genre_filter, name='genre_filter'),
 ]
