@@ -29,7 +29,7 @@
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Favorite Directors</th>
-                <td>{% if user_info.director_set %}{% for genre in user_info.director_set.all %}<a href="{% url 'accounts:favoritesDirectors' user_info.id  %}">{{ director.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 감독을 등록해 주세요.</span>{% endif %}</td>
+                <td>{% if user_info.like_directors %}{% for director in user_info.like_directors.all %}<a href="{% url 'accounts:favoritesDirectors' user_info.id  %}">{{ director.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 감독을 등록해 주세요.</span>{% endif %}</td>
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Favorite Casts</th>
