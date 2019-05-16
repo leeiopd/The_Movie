@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -10,10 +10,27 @@ from .forms import ReviewForm, CommentForm
 # Create your views here.
 @login_required
 def main(request):
-    movies = Movie.objects.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:20]
-    # 리뷰 작성 여부 확인
-    user_movies = request.user.review_set.values_list('movie__id', flat=True)
-    context = {'movies': movies, 'user_movies': user_movies}
+    # 사용자 평점 기준 movie top10
+    movies_top10 = Movie.objects.annotate(score_avg=Avg('review__score')).exclude(review__in=request.user.review_set.all()).order_by('-score_avg')[:10]
+    movies_pop10 = Movie.objects.annotate(review_cnt=Count('review')).exclude(review__in=request.user.review_set.all()).order_by('-review_cnt')[:10]
+    # themoviedb 기준 movie top10
+    movies_dbtop10 = Movie.objects.exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    # 내가 좋아하는 장르의 영화
+    movies_genre = Movie.objects.filter(genres__in=request.user.like_genres.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    # 내가 좋아하는 배우가 출연한 영화
+    movies_cast = Movie.objects.filter(casts__in=request.user.like_casts.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]        
+    # 내가 좋아하는 감독이 연출한 영화
+    movies_director = Movie.objects.filter(director__in=request.user.like_directors.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    # 내가 구독한 유저가 좋아하는 영화
+    movies_user = Movie.objects.filter(like_users__in=request.user.subscribes.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    context = {'movies_top10': movies_top10,
+                'movies_pop10': movies_pop10,
+                'movies_dbtop10': movies_dbtop10,
+                'movies_genre': movies_genre,
+                'movies_cast': movies_cast,
+                'movies_director': movies_director,              
+                'movies_user': movies_user,
+                }
     return render(request, 'movies/main.html', context)
 
 @login_required
@@ -46,7 +63,6 @@ def create(request, movie_pk):
                 review.save()
                 request.user.profile.point += 100
                 request.user.profile.save()
-                print(request.user.profile.point)
                 return redirect('movies:detail', movie_pk)
         else:
             form = ReviewForm()
@@ -59,6 +75,8 @@ def delete(request, movie_pk, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     if request.user == review.user or request.user.is_superuser:
         review.delete()
+        request.user.profile.point -= 100
+        request.user.profile.save()
         return redirect('movies:detail', movie_pk)
     else:
         messages.add_message(request, messages.WARNING, 'You are not a writer.')
@@ -94,6 +112,8 @@ def create_comment(request, movie_pk, review_pk):
             comment.user = request.user
             comment.review = review
             comment.save()
+            request.user.profile.point += 10
+            request.user.profile.save()
             data = {'userPk': comment.user.pk,
                     'username': comment.user.username,
                     'content': comment.content,
@@ -115,6 +135,8 @@ def delete_comment(request, comment_pk):
         movie_pk = comment.review.movie.pk
         if request.user == comment.user or request.user.is_superuser:
             comment.delete()
+            request.user.profile.point -= 10
+            request.user.profile.save()
             data = {'count': review.comment_set.count(), 'reviewPk': review.pk}
             return JsonResponse(data)
         else:

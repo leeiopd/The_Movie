@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class User(AbstractUser):
-    subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='subscribe')
+    subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='subscribes')
     
     def __str__(self):
         return f'{self.pk}: {self.username}'
