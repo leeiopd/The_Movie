@@ -5,12 +5,14 @@
     <table class="table text-center">
         <thead>
             <tr>
+                <th scope="col">RANK</th>
                 <th scope="col">ID</th>
                 <th scope="col">LEVEL</th>
                 <th scope="col">POINT</th>
                 <th scope="col">REVIEW</th>
                 <th scope="col">COMMENT</th>
-                <th scope="col"></th>
+                <th scope="col">SUBSCRIBE</th>
+                <th scope="col">INFO</th>
                 </tr>
         </thead>
         <tbody>
@@ -18,6 +20,9 @@
             {% if profile.user.username == 'admin' %}
             {% else %}
             <tr>
+                <td>
+                    {{ forloop.counter }}
+                </td>
                 <td>
                     {{ profile.user.username }}
                 </td>
@@ -39,7 +44,7 @@
                                 <a  href="{% url 'accounts:user_info' request.user.id %}">ME</a>
                                 </div>
                         {% else %}
-                        <button class="subscribe-button ml-3" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
+                        <button class="subscribe-button ml-3 btn btn-outline-info p-0 mx-auto" data-id="{{profile.user.id}}">{% if request.user in profile.user.subscribers.all %}취소{% else %}구독{% endif %}</button>
                         {% endif %}
                 </td>
                 <td>
@@ -58,8 +63,9 @@
 
 
 <script>
-        const subscribeButton = document.querySelector('.subscribe-button')
-        subscribeButton.addEventListener('click', function(e){
+        const subscribeButton = document.querySelectorAll('.subscribe-button')
+        subscribeButton.forEach(function(button){
+            button.addEventListener('click', function(e){
             const userId = e.target.dataset.id
             // is_ajax() True 를 위한 것
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
@@ -70,11 +76,9 @@
             
             axios.post(`/accounts/${userId}/subscribe/`)
             .then(function(response){
-                const SubscriberCount = document.querySelector(`#subscriber-count-${userId}`)
-                SubscriberCount.innerText = response.data.subscribe_count
                 if (response.data.is_subscribe)
                 {
-                    e.target.innerText = "구독취소"
+                    e.target.innerText = "취소"
                 }
                 else
                 {
@@ -82,7 +86,8 @@
                 }
             })
         })
+        })
     
-</script>
+    </script>
 
 {% endblock %}

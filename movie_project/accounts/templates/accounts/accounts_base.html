@@ -4,7 +4,7 @@
 
 
 <div class="d-flex">
-    <div class="p-2 vh-100 bd-highlight" style="width: 20%!important;">
+    <div class="pt-0 vh-100 bd-highlight" style="width: 20%!important;">
             {% if user_info == request.user %}
         <table class="table table-hover">
             <tbody>
@@ -68,7 +68,7 @@
             </table>
         {% endif %}
     </div>
-    <div class="p-2 vh-100 w-100 bd-highlight">
+    <div class="pt-0 vh-100 w-100 bd-highlight">
     {% block accounts %}
     {% endblock %}
     </div>

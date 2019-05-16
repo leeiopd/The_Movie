@@ -17,11 +17,11 @@
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Point</th>
-                <td><i class="fas fa-lg fa-chess-{% if user_info.profile.point >= 50000 %}king{% elif user_info.profile.point >= 10000 %}queen{% elif user_info.profile.point >= 5000 %}bishop{% elif user_info.profile.point >= 1000 %}knight{% elif user_info.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i><span class="bold">&nbsp;/&nbsp;</span> {{ user_info.profile.point }}점</td>
+                <td><i class="fas fa-lg fa-chess-{% if user_info.profile.point >= 50000 %}king{% elif user_info.profile.point >= 10000 %}queen{% elif user_info.profile.point >= 5000 %}bishop{% elif user_info.profile.point >= 1000 %}knight{% elif user_info.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i><span class="bold">&nbsp;/&nbsp;</span> {{ user_info.profile.point }} point</td>
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Favorite Movies</th>
-                <td>{% if user.info.like_movies %}{% for movie in user_info.like_movies.all %}<a href="{% url 'movies:detail' movie.id  %}">{{ movie.title }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 영화를 등록해 주세요.</span>{% endif %}</td>
+                <td>{% if user_info.like_movies.first %}{% for movie in user_info.like_movies.all %}<a href="{% url 'movies:detail' movie.id  %}">{{ movie.title }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 영화를 등록해 주세요.</span>{% endif %}</td>
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Favorite Gernes</th>
@@ -29,20 +29,20 @@
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Favorite Directors</th>
-                <td>{% if user_info.director_set %}{% for genre in user_info.director_set.all %}<a href="">{{ director.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 감독을 등록해 주세요.</span>{% endif %}</td>
+                <td>{% if user_info.director_set %}{% for genre in user_info.director_set.all %}<a href="{% url 'accounts:favoritesDirectors' user_info.id  %}">{{ director.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 감독을 등록해 주세요.</span>{% endif %}</td>
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Favorite Casts</th>
-                <td>{% if user_info.like_casts %}{% for cast in user_info.like_casts.all %}<a href="">{{ cast.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 배우를 등록해 주세요.</span>{% endif %}</td>
+                <td>{% if user_info.like_casts.first %}{% for cast in user_info.like_casts.all %}<a href="{% url 'accounts:favoritesCasts' user_info.id  %}">{{ cast.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 배우를 등록해 주세요.</span>{% endif %}</td>
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Subscribes</th>
-                <td><a href="{% url 'accounts:subscribeList' user_info.id %}">{{ user_info.subscribe.all.count }}&nbsp;명</a></td>
+                <td><a href="{% url 'accounts:subscribeList' user_info.id %}">{{ user_info.subscribes.all.count }}&nbsp;명</a></td>
             </tr>
             <tr>
                 <th scope="row" style="width: 12rem;">Subscribers</th>
                 <td><a href="{% url 'accounts:subscriberList' user_info.id %}"><span id="subscriber-count-{{user_info.id}}">{{ user_info.subscribers.all.count }}</span><span>&nbsp;명</span></a>{% if request.user != user_info %}
-    <button class="subscribe-button ml-3" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
+    <button class="subscribe-button ml-3" data-id="{{user_info.id}}">{% if request.user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
     {% endif %}</td>
             </tr>
             <tr>

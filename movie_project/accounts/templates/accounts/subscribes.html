@@ -1,7 +1,8 @@
 {% extends 'accounts/accounts_base.html' %}
 {% block accounts %}
 <div class="container">
-{% if subscribes %}
+        {% if subscribes.count %}
+
 
 <table class="table text-center">
     <thead>
@@ -11,13 +12,15 @@
             <th scope="col">POINT</th>
             <th scope="col">REVIEW</th>
             <th scope="col">COMMENT</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
+            <th scope="col">SUBSCRIBE</th>
+            <th scope="col">INFO</th>
             </tr>
     </thead>
     <tbody>
         {% for profile in profiles %}
         {% if user_info in profile.user.subscribers.all %}
+        {% if user_info == profile.user %}
+        {% else %}
         <tr>
             <td>
                 {{ profile.user.username }}
@@ -40,7 +43,7 @@
                     <a  href="{% url 'accounts:user_info' request.user.id %}">ME</a>
                     </div>
                     {% else %}
-                    <button class="subscribe-button ml-3" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
+                    <button class="subscribe-button ml-3 btn btn-outline-info p-0 mx-auto" data-id="{{profile.user.id}}">{% if request.user in profile.user.subscribers.all %}취소{% else %}구독{% endif %}</button>
                     {% endif %}
             </td>
             <td>
@@ -50,6 +53,7 @@
                 {% endif %}
             </td>
         </tr>
+        {% endif %}
         {% endif%}
         {% endfor %}
     </tbody>
@@ -60,15 +64,8 @@
     {% if user_info == request.user %}<a href="{% url 'accounts:rank' %}" role="button">구독하러 가기</a>{% endif %}
     
 </div>
-
-
-
-
-
-
-
-
 {% else %}
+
 <div class="jumbotron">
         <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 구독한 유저가 없습니다.{% else %}{{ user_info.username }} 님이 구독한 유저가 없습니다. {% endif %}</h1>
         <hr class="my-4">
@@ -79,12 +76,21 @@
             <a class="mr-3" href="{% url 'accounts:user_info' user_info.id %}" role="button">돌아가기</a>
         </div>
 </div>
+
+
+
+
+
+
+
+
 {% endif %}
 </div>
 
 <script>
-        const subscribeButton = document.querySelector('.subscribe-button')
-        subscribeButton.addEventListener('click', function(e){
+        const subscribeButton = document.querySelectorAll('.subscribe-button')
+        subscribeButton.forEach(function(button){
+            button.addEventListener('click', function(e){
             const userId = e.target.dataset.id
             // is_ajax() True 를 위한 것
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
@@ -95,17 +101,16 @@
             
             axios.post(`/accounts/${userId}/subscribe/`)
             .then(function(response){
-                const SubscriberCount = document.querySelector(`#subscriber-count-${userId}`)
-                SubscriberCount.innerText = response.data.subscribe_count
                 if (response.data.is_subscribe)
                 {
-                    e.target.innerText = "구독취소"
+                    e.target.innerText = "취소"
                 }
                 else
                 {
                     e.target.innerText = "구독"
                 }
             })
+        })
         })
     
 </script>

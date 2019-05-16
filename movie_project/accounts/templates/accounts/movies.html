@@ -30,7 +30,7 @@
         <p class="ml-5">{% if user_info == request.user %}내 취향 영화에 '좋아요'와 '리뷰'를 남겨 보세요!{% else %}{{ user_info.username }} 님께 영화를 추천해 보세요!{% endif %}</p>
         <p class="ml-5">{% if user_info == request.user %}포인트 적립과 함께 구독자들에게 영화 추천 피드를 전해보세요.{% else %}내 취향 영화도 좋아하실 거예요.{% endif %}</p>
         <div class="d-flex flex-row-reverse mr-5">
-        <a class="btn btn-primary btn-lg " href="{% url 'accounts:user_info' user_info.id %}" role="button">확인</a>
+        <a href="{% url 'accounts:user_info' user_info.id %}" role="button">돌아가기</a>
     </div>
 </div>
 {% endif %}

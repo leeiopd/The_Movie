@@ -121,7 +121,7 @@ def subscribe(request, user_id):
 def subscribeList(request, user_id):
     profiles = Profile.objects.all().order_by('-point')
     user_info = get_object_or_404(get_user_model(), pk=user_id)
-    subscribes = user_info.subscribe.all()
+    subscribes = user_info.subscribes.all()
     context = {'subscribes': subscribes, 'user_info':user_info, 'profiles':profiles}
     return render(request, 'accounts/subscribes.html', context)
 
@@ -142,7 +142,7 @@ def viewfeed(request, user_id):
     if request.user.id == user_id:
         user_info = get_object_or_404(get_user_model(), pk=user_id)
         # feeds = user.subscribe.prefetch_related('review_set')
-        subscribes = user_info.subscribe.values_list('id')
+        subscribes = user_info.subscribes.values_list('id')
         feeds = Review.objects.filter(user_id__in=subscribes).order_by('-id')
         # feeds = []
         # for user in allSubUser:

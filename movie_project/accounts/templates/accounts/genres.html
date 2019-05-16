@@ -48,7 +48,7 @@
     <h1 class="display-4 ml-3">{% if user_info == request.user %}내가 좋아하는 장르가 비어있네요.{% else %}{{ user_info.username }} 님이 좋아하는 장르가 없어요 ㅜㅜ {% endif %}</h1>
     <hr class="my-4">
     <div class="d-flex flex-row-reverse mr-5">
-    <a class="btn btn-primary btn-lg mr-2 " href="{% url 'accounts:user_info' user_info.id %}" role="button">확인</a>
+    <a href="{% url 'accounts:user_info' user_info.id %}" role="button">돌아가기</a>
     {% if user_info == request.user %}<a class="btn btn-primary btn-lg mr-3" href="{% url 'accounts:updateGenre' %}" role="button">등록하기</a>{% endif %}
     </div>
 </div>
