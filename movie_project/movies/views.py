@@ -15,15 +15,28 @@ def main(request):
     # themoviedb 기준 movie top10
     movies_dbtop10 = Movie.objects.order_by('-vote_average')[:10]
     # 내가 좋아하는 장르의 영화
-    movies_gerne = Movie.objects.filter(genres__in=request.user.like_genres.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    movies_genre = [False]
+    if request.user.like_genres.all():
+        movies_gerne = Movie.objects.filter(genres__in=request.user.like_genres.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]        
     # 내가 좋아하는 배우가 출연한 영화
-    movies_cast = Movie.objects.filter(casts__in=request.user.like_casts.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    movies_cast = [False]
+    if request.user.like_casts.all():
+        movies_cast = Movie.objects.filter(casts__in=request.user.like_casts.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]        
     # 내가 좋아하는 감독이 연출한 영화
-    movies = Movie.objects.filter(director__in=request.user.like_directors.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
-
-
-
-    context = {'movies': movies}
+    movies_director = [False]
+    if request.user.like_directors.all():
+        movies_director = Movie.objects.filter(director__in=request.user.like_directors.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    # 내가 구독한 유저가 좋아하는 영화
+    movies_user = [False]
+    if request.user.subscribers.all():
+        movies_user = Movie.objects.filter(review__user__in=request.user.subscribers.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    context = {'movies_top10': movies_top10,
+                'movies_dbtop10': movies_dbtop10,
+                'movies_genre': movies_genre,
+                'movies_cast': movies_cast,
+                'movies_director': movies_director,              
+                'movies_user': movies_user,
+                }
     return render(request, 'movies/main.html', context)
 
 @login_required

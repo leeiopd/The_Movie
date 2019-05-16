@@ -76,7 +76,10 @@
                     </div>
                     <div id="collapse{{ review.pk }}" class="collapse" aria-labelledby="heading{{ review.pk }}" data-parent="#accordion1">
                         <div class="card-body">
-                            <p class="ml-2" style="color:lightblue"><a href="{% url 'accounts:user_info' review.user.pk %}"><i class="fas fa-lg fa-chess-{% if user.profile.point >= 50000 %}king{% elif user.profile.point >= 10000 %}queen{% elif user.profile.point >= 5000 %}bishop{% elif user.profile.point >= 1000 %}knight{% elif user.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i><b class="ml-2">{{ review.user.username }}</b></a> 님이 작성한 리뷰입니다.</p>
+                            <p class="ml-2" style="color:lightblue">
+                                <a href="{% url 'accounts:user_info' review.user.pk %}"><i class="fas fa-lg fa-chess-{% if review.user.profile.point >= 50000 %}king{% elif review.user.profile.point >= 10000 %}queen{% elif review.user.profile.point >= 5000 %}bishop{% elif review.user.profile.point >= 1000 %}knight{% elif review.user.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i><b class="ml-2">{{ review.user.username }}</b></a> 님이 작성한 리뷰입니다.
+                                {% if user != review.user %}<a href="{% url 'accounts:subscribe' review.user.pk %}"> 구독하기</a>
+                            </p>
                             <p class="pb-5 mb-2">{{ review.content }}</p>
                             <p><i data-id="{{ review.pk }}" data-object="review" class="{% if user in review.like_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg like-button" style="color:crimson"></i><span id="like-count-review-{{ review.pk }}"> {{ review.like_users.count }}</span>명의 user가 이 리뷰를 좋아합니다.</p>
                             {% if user == review.user or user.is_superuser %}
