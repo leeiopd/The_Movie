@@ -1,53 +1,55 @@
 {% extends 'accounts/accounts_base.html' %}
 {% block accounts %}
 <div class="container">
-    {{ user_info.username }}
-    <br>
-    {{ user_info.profile.nickname }}
-    <br>
-    {{ user_info.profile.introduction }}
-    <br>
-    {{ user_info.profile.point }}
-    <br>
-    {% for genre in user_info.like_genres.all %}
-    {{ genre.name }}
-    <br>
-    {% endfor %}
-    <br>
-    구독자 : <span id="subscriber-count-{{user_info.pk}}">{{ user_info.subscribers.all.count }}</span>
-    <br>
-    {% if request.user == user_info %}
-    <a href="{% url 'accounts:subscriberList' request.user.pk  %}">
-    {% else %}
-    <a href="{% url 'accounts:subscriberList' user_info.pk  %}">
-    {% endif %}
-    구독자 보기</a>
-    <br>
-    구독 : {{ user_info.subscribe.all.count }}
-    <br>
-    {% if request.user == user_info %}
-    <a href="{% url 'accounts:subscribeList' request.user.pk %}">
-        {% else %}
-        <a href="{% url 'accounts:subscribeList' user_info.pk %}">
-        {% endif %}
-        구독 목록</a>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th scope="row" style="width: 12rem;">ID</th>
+                <td>{{ user_info.username }}</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Nickname</th>
+                <td>{{ user_info.profile.nickname }}</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Introduction</th>
+                <td>{{ user_info.profile.introduction }}</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Point</th>
+                <td><i class="fas fa-lg fa-chess-{% if user_info.profile.point >= 50000 %}king{% elif user_info.profile.point >= 10000 %}queen{% elif user_info.profile.point >= 5000 %}bishop{% elif user_info.profile.point >= 1000 %}knight{% elif user_info.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i><span class="bold">&nbsp;/&nbsp;</span> {{ user_info.profile.point }}점</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Favorite Movies</th>
+                <td>{% if user.info.like_movies %}{% for movie in user_info.like_movies.all %}<a href="{% url 'movies:detail' movie.id  %}">{{ movie.title }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 영화를 등록해 주세요.</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Favorite Gernes</th>
+                <td>{% if user_info.like_genres %}{% for genre in user_info.like_genres.all %}<a href="{% url 'accounts:favoritesGenres' user_info.id  %}">{{ genre.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 영화 장르를 등록해 주세요.</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Favorite Directors</th>
+                <td>{% if user_info.director_set %}{% for genre in user_info.director_set.all %}<a href="">{{ director.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 감독을 등록해 주세요.</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Favorite Casts</th>
+                <td>{% if user_info.like_casts %}{% for cast in user_info.like_casts.all %}<a href="">{{ cast.name }}</a>&nbsp;&nbsp;&nbsp;{% endfor %}{% else %}<span>좋아하는 배우를 등록해 주세요.</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Subscribes</th>
+                <td>{{ user_info.subscribe.all.count }}&nbsp;명</td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 12rem;">Subscribers</th>
+                <td><span id="subscriber-count-{{user_info.id}}">{{ user_info.subscribers.all.count }}</span><span>&nbsp;명</span>{% if request.user != user_info %}
+    <button class="subscribe-button ml-3" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
+    {% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
     
-    <br>
-
-    {% if request.user != user_info %}
-    <button class="subscribe-button" data-id="{{user_info.id}}">{% if user in user_info.subscribers.all %}구독취소{% else %}구독{% endif %}</button>
-    {% endif %}
-    <br>
-    {% if request.user == user_info %}
-    <a href="{% url 'accounts:feed' request.user.pk %}">New 피드</a>
-    {% endif %}
-    
-    <br>
-
-
-    {% if request.user == user_info %}
-    <a href="{% url 'accounts:updateUser' %}">프로필 수정</a>
-    {% endif %}
 </div>
     {% if request.user != user_info %}
     <script>

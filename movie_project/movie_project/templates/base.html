@@ -25,6 +25,8 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="{% static 'images/favicon/ms-icon-144x144.png' %}">
     <meta name="theme-color" content="#ffffff">
+    {% block head%}
+    {% endblock %}
     <!-- fontawsome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <!-- vue.js -->
@@ -83,7 +85,7 @@
                 <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up<span class="sr-only">(current)</span></a>  
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="{% url 'accounts:signin' %}">Login</a>
+                <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
             </li>
             </ul>
             {% endif %}

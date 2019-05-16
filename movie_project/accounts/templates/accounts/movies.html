@@ -2,13 +2,33 @@
 {% block accounts %}
 <div class="container">
 {% if movies %}
-{% for movie in movies %}
 
-    <br>
-    
 
-    <br>
-{% endfor %}
+<table class="table">
+    <tbody>
+        <tr>
+            <th class="text-center">{% if user_info == request.user %}나의 추천 영화{% else %}유저 추천 영화{% endif %}</th>
+        </tr>
+        <tr>
+            <td>
+                <div class="container row m-0">
+                <div class="col d-flex flex-row justify-content-center">
+                            {% for movie in movies %}
+                                
+                                
+                                <div class="col-3 text-center">
+                                <a href="{% url 'movies:detail' movie.id %}" class="w-10rem"><img src="{{ movie.poster_path }}" alt="Image" class="w-75"/></a>
+                                </div>
+                            
+                        {% endfor %}  
+               
+                </div>   
+                </div>   
+            </td>
+        </tr>
+    </tbody>
+</table>    
+
 {% else %}
 <div class="jumbotron">
         <h1 class="display-4 ml-3">{% if user_info == request.user %}나의 추천 영화가 없습니다.{% else %}{{ user_info.username }} 님의 추천 영화가 없습니다. {% endif %}</h1>

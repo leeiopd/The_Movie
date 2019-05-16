@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile
 from movies.models import Genre, Review
 from .forms import CreateForm, LoginForm, ProfileForm
-from django.contrib.auth import get_user_model, login, authenticate, logout
+from django.contrib.auth import get_user_model, authenticate, logout
+from django.contrib.auth import login as user_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.db.models import Avg
 
 # Create your views here.
 
@@ -26,7 +28,7 @@ def signup(request):
             if userform.is_valid():
                 user = userform.save()
                 Profile.objects.create(user=user, point=0)
-                login(request, user)
+                user_login(request, user)
                 return redirect('accounts:updateUser')
         else:
             userform = CreateForm()
@@ -78,14 +80,14 @@ def updateGenre(request):
 
 
 @require_http_methods(['GET', 'POST'])
-def signin(request):
+def login(request):
     if request.user.is_authenticated:
         return redirect('movies:main')
     else:
         if request.method == 'POST':
             userLoginform = AuthenticationForm(request, request.POST)
             if userLoginform.is_valid():
-                login(request, userLoginform.get_user())
+                user_login(request, userLoginform.get_user())
                 return redirect('movies:main')
         else:
             userLoginform = AuthenticationForm()
@@ -96,7 +98,7 @@ def signin(request):
 @login_required
 def log_out(request):
     logout(request)
-    return redirect('accounts:signin')
+    return redirect('accounts:login')
 
 
 @login_required
@@ -147,19 +149,36 @@ def viewfeed(request, user_id):
 def favoritesDirectors(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     directors = user_info.like_directors.all()
-    context = {'directors': directors, 'user_info':user_info}
+    director_movie_lists=[]
+    for director in directors:
+        director_movies=[director]
+        director_movies.append(director.movie_set.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:4])
+        director_movie_lists.append(director_movies)
+    context = {'director_movie_lists': director_movie_lists, 'user_info':user_info, 'directors': directors}
     return render(request, 'accounts/directors.html', context)
+
+
 
 def favoritesCasts(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     casts = user_info.like_casts.all()
-    context = {'casts': casts, 'user_info':user_info}
+    cast_movie_lists=[]
+    for cast in casts:
+        cast_movies=[cast]
+        cast_movies.append(cast.movies.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:4])
+        cast_movie_lists.append(cast_movies)
+    context = {'cast_movie_lists': cast_movie_lists, 'user_info':user_info, 'casts': casts}
     return render(request, 'accounts/casts.html', context)
 
 def favoritesGenres(request, user_id):
     user_info = get_object_or_404(get_user_model(), pk=user_id)
     genres = user_info.like_genres.all()
-    context = {'genres': genres, 'user_info':user_info}
+    genre_movie_lists=[]
+    for genre in genres:
+        genre_movies=[genre]
+        genre_movies.append(genre.movies.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:4])
+        genre_movie_lists.append(genre_movies)
+    context = {'genre_movie_lists': genre_movie_lists, 'user_info':user_info, 'genres': genres}
     return render(request, 'accounts/genres.html', context)
 
 def favoritesMovies(request, user_id):
