@@ -17,13 +17,13 @@ def main(request):
     # themoviedb 기준 movie top10
     movies_dbtop10 = Movie.objects.exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
     # 내가 좋아하는 장르의 영화
-    movies_genre = Movie.objects.filter(genres__in=request.user.like_genres.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    movies_genre = Movie.objects.filter(genres__in=request.user.like_genres.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average').distinct()[:10]
     # 내가 좋아하는 배우가 출연한 영화
-    movies_cast = Movie.objects.filter(casts__in=request.user.like_casts.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]        
+    movies_cast = Movie.objects.filter(casts__in=request.user.like_casts.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average').distinct()[:10]      
     # 내가 좋아하는 감독이 연출한 영화
-    movies_director = Movie.objects.filter(director__in=request.user.like_directors.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    movies_director = Movie.objects.filter(director__in=request.user.like_directors.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average').distinct()[:10]
     # 내가 구독한 유저가 좋아하는 영화
-    movies_user = Movie.objects.filter(like_users__in=request.user.subscribes.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    movies_user = Movie.objects.filter(like_users__in=request.user.subscribes.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average').distinct()[:10]
     context = {'movies_top10': movies_top10,
                 'movies_pop10': movies_pop10,
                 'movies_dbtop10': movies_dbtop10,
