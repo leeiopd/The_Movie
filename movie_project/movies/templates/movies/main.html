@@ -1,14 +1,179 @@
 {% extends 'base.html' %}
 {% block title %}The Movie{% endblock %}
+{% block style %}
+<style>
+    .table td {
+        border-top: 0px !important;
+    }
+</style>
+{% endblock %}
 {% block body %}
 <div class="container">
-    <div class="row">
-        {% for movie in movies_users %}
-        <div class="col-6 col-md-4 col-lg-3 mb-2">
-            <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
-        </div>
-        {% endfor %}
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">The movie user가 높은 점수를 준 영화</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="row">
+                    {% for movie in movies_top10 %}
+                    <div class="col-6 col-md-4 col-lg-3 mb-2">
+                        <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+                    </div>
+                    {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">많은 The movie user 평가한 영화</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="row">
+                    {% for movie in movies_pop10 %}
+                    <div class="col-6 col-md-4 col-lg-3 mb-2">
+                        <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+                    </div>
+                    {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">The movie db user가 높은 점수를 준 영화</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="row">
+                    {% for movie in movies_dbtop10 %}
+                    <div class="col-6 col-md-4 col-lg-3 mb-2">
+                        <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+                    </div>
+                    {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">내가 좋아하는 장르의 추천 영화</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="row">
+                        {% if user.like_genres.all %}
+                            {% for movie in movies_genre %}
+                            <div class="col-6 col-md-4 col-lg-3 mb-2">
+                                <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+                            </div>
+                            {% empty %}
+                            <p>내가 좋아하는 장르의 추천 영화를 정복하셨습니다! 새로운 장르를 개척하러 가볼까요? <a href="{% url 'accounts:updateGenre' %}"><i class="fas fa-edit"></i></a></p>
+                            {% endfor %}
+                        {% else %}
+                        <p class="ml-3">좋아하는 장르를 선택해주세요. <a href="{% url 'accounts:updateGenre' %}"><i class="fas fa-edit"></i></a></p>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">내가 좋아하는 감독의 추천 영화</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="row">
+                        {% if user.like_movies.all %}
+                            {% for movie in movies_director %}
+                            <div class="col-6 col-md-4 col-lg-3 mb-2">
+                                <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+                            </div>
+                            {% empty %}
+                            <p>내가 좋아하는 감독의 추천 영화를 정복하셨습니다! 새로운 감독을 바구니에 담아주세요~!</p>
+                            {% endfor %}
+                        {% else %}
+                            <p class="ml-3">좋아하는 감독이 없습니다.</p>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">내가 좋아하는 배우의 추천 영화</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="row">
+                        {% if user.like_casts.all %}
+                            {% for movie in movies_cast %}
+                            <div class="col-6 col-md-4 col-lg-3 mb-2">
+                                <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+                            </div>
+                            {% empty %}
+                            <p>내가 좋아하는 배우의 추천 영화를 정복하셨습니다! 새로운 배우를 바구니에 담아주세요~!</p>
+                            {% endfor %}
+                        {% else %}
+                            <p class="ml-3">좋아하는 배우가 없습니다.</p>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">내가 구독한 user가 좋아하는 영화</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="row">
+                        {% if user.subscribes.all %}
+                            {% for movie in movies_user %}
+                            <div class="col-6 col-md-4 col-lg-3 mb-2">
+                                <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+                            </div>
+                            {% empty %}
+                            <p>내가 구독한 유저가 좋아하는 영화에 모두 리뷰를 남기셨습니다! 새로운 user를 구독해주세요. <a href="{% url 'accounts:rank' %}"><i class="far fa-hand-point-up"></i></a></p>
+                            {% endfor %}
+                        {% else %}
+                            <p class="ml-3">구독한 유저가 없습니다. <a href="{% url 'accounts:rank' %}"><i class="far fa-hand-point-up"></i></a></p>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
 </div>
 
 {% endblock %}

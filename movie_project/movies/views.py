@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -11,26 +11,20 @@ from .forms import ReviewForm, CommentForm
 @login_required
 def main(request):
     # 사용자 평점 기준 movie top10
-    movies_top10 = Movie.objects.annotate(score_avg=Avg('review__score')).order_by('-score_avg')[:10]
+    movies_top10 = Movie.objects.annotate(score_avg=Avg('review__score')).exclude(review__in=request.user.review_set.all()).order_by('-score_avg')[:10]
+    movies_pop10 = Movie.objects.annotate(review_cnt=Count('review')).exclude(review__in=request.user.review_set.all()).order_by('-review_cnt')[:10]
     # themoviedb 기준 movie top10
-    movies_dbtop10 = Movie.objects.order_by('-vote_average')[:10]
+    movies_dbtop10 = Movie.objects.exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
     # 내가 좋아하는 장르의 영화
-    movies_genre = [False]
-    if request.user.like_genres.all():
-        movies_gerne = Movie.objects.filter(genres__in=request.user.like_genres.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]        
+    movies_genre = Movie.objects.filter(genres__in=request.user.like_genres.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
     # 내가 좋아하는 배우가 출연한 영화
-    movies_cast = [False]
-    if request.user.like_casts.all():
-        movies_cast = Movie.objects.filter(casts__in=request.user.like_casts.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]        
+    movies_cast = Movie.objects.filter(casts__in=request.user.like_casts.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]        
     # 내가 좋아하는 감독이 연출한 영화
-    movies_director = [False]
-    if request.user.like_directors.all():
-        movies_director = Movie.objects.filter(director__in=request.user.like_directors.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    movies_director = Movie.objects.filter(director__in=request.user.like_directors.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
     # 내가 구독한 유저가 좋아하는 영화
-    movies_user = [False]
-    if request.user.subscribers.all():
-        movies_user = Movie.objects.filter(review__user__in=request.user.subscribers.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
+    movies_user = Movie.objects.filter(like_users__in=request.user.subscribes.all()).exclude(review__in=request.user.review_set.all()).order_by('-vote_average')[:10]
     context = {'movies_top10': movies_top10,
+                'movies_pop10': movies_pop10,
                 'movies_dbtop10': movies_dbtop10,
                 'movies_genre': movies_genre,
                 'movies_cast': movies_cast,
