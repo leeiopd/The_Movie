@@ -81,3 +81,7 @@
   * 평점 filter : `0516 12:15pm`
 * [django-bootstrap pagination](<https://github.com/jmcclell/django-bootstrap-pagination>)
 
+### Search
+
+* 검색 기능 : `0516 2:00pm`
+

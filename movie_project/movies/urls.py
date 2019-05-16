@@ -21,4 +21,5 @@ urlpatterns = [
     path('<int:comment_pk>/comment_like/', views.comment_like, name='comment_like'),
     path('list/score_filter/<int:score>/', views.score_filter, name='score_filter'),
     path('list/genre_filter/<int:genre_pk>/', views.genre_filter, name='genre_filter'),
+    path('search/', views.search, name='search')
 ]

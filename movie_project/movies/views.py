@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
 from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -62,6 +62,19 @@ def genre_filter(request, genre_pk):
     page = request.GET.get('page')
     contacts = paginator.get_page(page)
     context = {'movies':movies, 'contacts': contacts, 'genres': genres}
+    return render(request, 'movies/list.html', context)
+
+@require_POST
+@login_required
+def search(request):
+    keyword = request.POST.get('keyword')
+    movies = Movie.objects.filter(Q(original_title__contains=keyword) | Q(title__contains=keyword) | Q(director__name__contains=keyword) | Q(casts__name__contains=keyword)).distinct()
+    # movies = Movie.objects.filter(title__contains=keyword)
+    genres = Genre.objects.all()
+    paginator = Paginator(movies, 8)
+    page = request.GET.get('page')
+    contacts = paginator.get_page(page)
+    context = {'movies': movies, 'contacts': contacts, 'genres': genres}
     return render(request, 'movies/list.html', context)
 
 @login_required
