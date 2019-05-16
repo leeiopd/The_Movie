@@ -94,3 +94,38 @@
   * 구독, 구독자 페이지에서도 구독 버튼 활성화
   * 버튼 css적용
 * 디테일 CSS적용
+
+
+
+
+
+#### 5. 완성
+
+* 기능
+  * accounts_app
+    * user_info - 유저 정보 조회(accounts_app의 main 페이지)
+    * signup - 회원가입
+    * updateUser - 프로필 작성/수정
+    * profileTogenre - 프로필 작성/수정 후 장르 취향 정보 입력 유도
+    * updateGenre - 장르 작성/수정
+    * login - 로그인
+    * logout - 로그아웃
+    * subscribe - 구독기능
+    * subscribeList - 구독한 유저 조회
+      * 페이지 내에서 구독 및 유저 정보 조회 가능
+    * subscriberList - 구독하고 있는 유저 조회
+      * 페이지 내에서 구독 및 유저 정보 조회 가능
+    * feed - 내가 구독하고 있는 유저의 최신 review 조회
+    * favoritesCasts - 좋아하는 배우의 영화 리스트 조회
+      * 영화 포스터를 통해 영화 detail페이지로 이동
+    * favoritesDirectors - 좋아하는 감독의  영화 리스트 조회
+      * 영화 포스터를 통해 영화 detail페이지로 이동
+    * favoritesGenres - 좋아하는 배우 리스트 조회
+      * 영화 포스터를 통해 영화 detail페이지로 이동
+    * favoritesMovies - 좋아하는 영화 리스트 조회
+      * 영화 포스터를 통해 영화 detail페이지로 이동
+    * reviewsList - 작성한 리뷰 리스트
+    * rank - 전체 유저 랭킹 리스트
+      * 구독기능 사용 유도
+      * 페이지 내 구독 기능 사용 가능
+    * 추가 - 유저 정보 페이지에서 sidebar를 이용하여 접근 가능
