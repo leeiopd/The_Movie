@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load bootstrap_pagination %}
+{% block style %}
+
+{% endblock %}
+{% block body %}
+<div class="row">
+    <aside class="col-2 d-none d-md-block sidebar">
+            <nav class="sidebar-sticky mt-2">
+                <ul class="nav flex-column">
+                    <li class="nav-item mt-2">
+                        <a class="btn btn-outline-success btn-block" href="{% url 'movies:score_filter' 8 %}">평점 8 이상</a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a class="btn btn-outline-success btn-block" href="{% url 'movies:score_filter' 9 %}">평점 9 이상</a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>장르별 보기</span>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    {% for genre in genres %}
+                    <li class="nav-item mt-2">
+                        <a class="btn btn-outline-secondary btn-block" href="{% url 'movies:genre_filter' genre.pk %}">{{ genre.name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </aside>
+    <div class="col-10">
+        <div class="row">
+            {% for movie in contacts %}
+            <div class="col-6 col-md-4 col-lg-3 mb-2">
+                <a href="{% url 'movies:detail' movie.pk %}"><img src="{{ movie.poster_path }}" style="max-width:100%"></a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <div class="row d-flex justify-content-center">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% bootstrap_paginate contacts range=10 %}
+                    </span>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block script %}
+
+{% endblock %}

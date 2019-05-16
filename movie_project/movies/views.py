@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
 from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
-from .models import Movie, Review, Comment, Director, Cast
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import Movie, Review, Comment, Director, Cast, Genre
 from .forms import ReviewForm, CommentForm
 
 # Create your views here.
@@ -32,6 +33,49 @@ def main(request):
                 'movies_user': movies_user,
                 }
     return render(request, 'movies/main.html', context)
+
+@login_required
+def movie_list(request):
+    movies = Movie.objects.all()
+    genres = Genre.objects.all()
+    paginator = Paginator(movies, 8)
+    page = request.GET.get('page')
+    contacts = paginator.get_page(page)
+    context = {'movies':movies, 'contacts': contacts, 'genres': genres}
+    return render(request, 'movies/list.html', context)
+
+@login_required
+def score_filter(request, score):
+    movies = Movie.objects.filter(vote_average__gt=score).order_by('-vote_average')
+    genres = Genre.objects.all()
+    paginator = Paginator(movies, 8)
+    page = request.GET.get('page')
+    contacts = paginator.get_page(page)
+    context = {'movies':movies, 'contacts': contacts, 'genres': genres}
+    return render(request, 'movies/list.html', context)
+
+@login_required
+def genre_filter(request, genre_pk):
+    movies = Movie.objects.filter(genres__pk=genre_pk).order_by('-vote_average')
+    genres = Genre.objects.all()
+    paginator = Paginator(movies, 8)
+    page = request.GET.get('page')
+    contacts = paginator.get_page(page)
+    context = {'movies':movies, 'contacts': contacts, 'genres': genres}
+    return render(request, 'movies/list.html', context)
+
+@require_POST
+@login_required
+def search(request):
+    keyword = request.POST.get('keyword')
+    movies = Movie.objects.filter(Q(original_title__contains=keyword) | Q(title__contains=keyword) | Q(director__name__contains=keyword) | Q(casts__name__contains=keyword)).distinct()
+    # movies = Movie.objects.filter(title__contains=keyword)
+    genres = Genre.objects.all()
+    paginator = Paginator(movies, 8)
+    page = request.GET.get('page')
+    contacts = paginator.get_page(page)
+    context = {'movies': movies, 'contacts': contacts, 'genres': genres}
+    return render(request, 'movies/list.html', context)
 
 @login_required
 def detail(request, movie_pk):

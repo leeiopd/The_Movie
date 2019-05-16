@@ -67,14 +67,21 @@
 
 * 명예의 전당 (평점 top 10, 리뷰수 top 10)
   * view done : `0515 6:30pm`
+  * template done : `0515 10:50am`
 * 내 장르 영화 추천 / 내 배우 영화 추천 / 내 감독 영화 추천
   * view done : `0515 7:50pm`
+  * template done : `0515 10:50am`
 * 내가 구독한 사람이 좋아하는 영화
+  * view, template done : `0515 10:50am`
 
 ### Movie List
 
 * left bar
-  * genre filter
-  * 평점 filter
+  * genre filter : `0516 12:15pm`
+  * 평점 filter : `0516 12:15pm`
 * [django-bootstrap pagination](<https://github.com/jmcclell/django-bootstrap-pagination>)
+
+### Search
+
+* 검색 기능 : `0516 2:00pm`
 
