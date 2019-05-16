@@ -48,7 +48,31 @@
                     </tr>
                     <tr>
                         <th scope="row">score</th>
-                        <td>{% if movie.score_avg %}{{ movie.score_avg }}{% else %}{{ movie.vote_average }}{% endif %}</td>
+                        <td>{% if movie.score_avg %}
+                            <span style="color:gold">{% if movie.score_avg == 10 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            {% elif movie.score_avg >= 9 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                            {% elif movie.score_avg >= 8 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            {% elif movie.score_avg >= 7 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                            {% elif movie.score_avg >= 6 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            {% elif movie.score_avg >= 5 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                            {% elif movie.score_avg >= 4 %}<i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            {% elif movie.score_avg >= 3 %}<i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                            {% elif movie.score_avg >= 2 %}<i class="fas fa-star"></i>
+                            {% else %}<i class="fas fa-star-half"></i>{% endif %}</span>
+                            {{ movie.score_avg|floatformat }}
+                            {% else %}
+                            <span style="color:gold">{% if movie.vote_average >= 10 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            {% elif movie.vote_average >= 9 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                            {% elif movie.vote_average >= 8 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            {% elif movie.vote_average >= 7 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                            {% elif movie.vote_average >= 6 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            {% elif movie.vote_average >= 5 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                            {% elif movie.vote_average >= 4 %}<i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            {% elif movie.vote_average >= 3 %}<i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                            {% elif movie.vote_average >= 2 %}<i class="fas fa-star"></i>
+                            {% else %}<i class="fas fa-star-half"></i>{% endif %}</span>
+                            {{ movie.vote_average }}
+                            {% endif %}</td>
                     </tr>
                     <tr>
                         <th scope="row">runtime</th>
@@ -79,6 +103,18 @@
                             <p class="ml-2" style="color:lightblue">
                                 <a href="{% url 'accounts:user_info' review.user.pk %}"><i class="fas fa-lg fa-chess-{% if review.user.profile.point >= 50000 %}king{% elif review.user.profile.point >= 10000 %}queen{% elif review.user.profile.point >= 5000 %}bishop{% elif review.user.profile.point >= 1000 %}knight{% elif review.user.profile.point >= 500 %}rook{% else %}pawn{% endif %}"></i><b class="ml-2">{{ review.user.username }}</b></a> 님이 작성한 리뷰입니다.
                                 {% if user != review.user %}<a href="{% url 'accounts:subscribe' review.user.pk %}"> 구독하기</a>{% endif %}
+                            </p>
+                            <p style="color:gold">
+                                {% if review.score == 10 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                {% elif review.score == 9 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                                {% elif review.score == 8 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                {% elif review.score == 7 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                                {% elif review.score == 6 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                {% elif review.score == 5 %}<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                                {% elif review.score == 4 %}<i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                {% elif review.score == 3 %}<i class="fas fa-star"></i><i class="fas fa-star-half"></i>
+                                {% elif review.score == 2 %}<i class="fas fa-star"></i>
+                                {% else %}<i class="fas fa-star-half"></i>{% endif %}
                             </p>
                             <p class="pb-5 mb-2">{{ review.content }}</p>
                             <p><i data-id="{{ review.pk }}" data-object="review" class="{% if user in review.like_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg like-button" style="color:crimson"></i><span id="like-count-review-{{ review.pk }}"> {{ review.like_users.count }}</span>명의 user가 이 리뷰를 좋아합니다.</p>
